@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 |
 | Here is where you can register API routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
+| is assigned the "API" middleware group. Enjoy building your API!
 |
 */
 
@@ -36,37 +36,37 @@ Route::group([
 ], function ($router) {
     Route::Group(['prefix'=>'store'],function (){
 
-        Route::post('','Api\\StoreApiController@index');
-        Route::post('audit','Api\\StoreApiController@audit');
-        Route::post('status','Api\\StoreApiController@status');
-        Route::post('balance','Api\\StoreApiController@balance');
+        Route::post('','API\\StoreAPIController@index');
+        Route::post('audit','API\\StoreAPIController@audit');
+        Route::post('status','API\\StoreAPIController@status');
+        Route::post('balance','API\\StoreAPIController@balance');
     });
 
     Route::Group(['prefix'=>'jobs'],function (){
 
-        Route::get('','Api\\JobsApiController@index');
-        Route::put('{id}','Api\\JobsApiController@update');
+        Route::get('','API\\JobsAPIController@index');
+        Route::put('{id}','API\\JobsAPIController@update');
     });
 
     Route::Group(['prefix'=>'job_cat'],function (){
-        Route::get('','Api\\JobCateAPIController@index');
-        Route::get('all','Api\\JobCateAPIController@all');
-        Route::post('','Api\\JobCateApiController@store');
-        Route::get('tree','Api\\JobCateApiController@tree');
-        Route::post('delete','Api\\JobCateApiController@delete');
-        Route::put('{id}','Api\\JobsApiController@update');
+        Route::get('','API\\JobCateAPIController@index');
+        Route::get('all','API\\JobCateAPIController@all');
+        Route::post('','API\\JobCateAPIController@store');
+        Route::get('tree','API\\JobCateAPIController@tree');
+        Route::post('delete','API\\JobCateAPIController@delete');
+        Route::put('{id}','API\\JobsAPIController@update');
     });
 
     Route::Group(['prefix'=>'app_user'],function (){
 
-        Route::get('','Api\\AppUserApiController@index');
-        Route::put('{id}','Api\\JobsAPIController@update');
+        Route::get('','API\\AppUserAPIController@index');
+        Route::put('{id}','API\\JobsAPIController@update');
     });
 
     Route::Group(['prefix'=>'feed_back'],function (){
 
-        Route::get('','Api\\FeedBackAPIController@index');
-        Route::post('audit','Api\\FeedBackAPIController@audit');
+        Route::get('','API\\FeedBackAPIController@index');
+        Route::post('audit','API\\FeedBackAPIController@audit');
     });
 });
 
