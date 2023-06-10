@@ -1,21 +1,21 @@
 version: '3'
 
 networks:
-  laravel:
+  recruit:
 services:
-  php:
+  php74:
     build:
       context: ./dockerfiles
       dockerfile: php.dockerfile
     ports:
-      - "9000:9000"
+      - "9999:9000"
     volumes:
       - ./:/var/www/html
       - type: bind
         source: ./
         target: /workspace
     networks:
-      - laravel
+      - recruit
     links:
       - mysqldb
 
@@ -25,12 +25,12 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - laravel
+      - recruit
     volumes:
       - "./dockerfiles/redis.conf:/path/to/redis.conf"
   mysqldb:
     image: mysql:5.7
-    container_name: mysql.local
+    container_name: mysql57.local
     restart: always
     environment:
       - MYSQL_DATABASE=recruit
@@ -38,11 +38,11 @@ services:
       - MYSQL_USER=button
       - MYSQL_PASSWORD=hellobutton
     ports:
-      - "8306:3306"
+      - "13306:3306"
     volumes:
       - "./data/db/mysql:/var/lib/mysql"
     networks:
-      - laravel
+      - recruit
 
 #  composer:
 #    build:
