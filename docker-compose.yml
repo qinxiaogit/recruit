@@ -20,7 +20,7 @@ services:
       - mysqldb
 
   redis:
-    image: redis:alpin
+    image: redis:alpine
     container_name: redis.recruit
     restart: unless-stopped
     ports:
