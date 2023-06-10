@@ -123,7 +123,8 @@ export const constantRoutes = [
         path: 'index',
         name: '用户数据',
         component: () => import('@/views/user/index'),
-        meta: { title: '用户数据', icon: 'el-icon-user' }
+        meta: { title: '用户数据', icon: 'el-icon-user' },
+        hidden: true
       }
     ]
   },
@@ -137,7 +138,8 @@ export const constantRoutes = [
         path: 'index',
         name: '小程序数据',
         component: () => import('@/views/data/index'),
-        meta: { title: '小程序数据', icon: 'el-icon-s-data' }
+        meta: { title: '小程序数据', icon: 'el-icon-s-data' },
+        hidden: true
       }
     ]
   },
@@ -150,7 +152,8 @@ export const constantRoutes = [
         path: 'index',
         name: '意见反馈',
         component: () => import('@/views/feedback/index'),
-        meta: { title: '意见反馈', icon: 'el-icon-phone-outline' }
+        meta: { title: '意见反馈', icon: 'el-icon-phone-outline' },
+        hidden: true
       }
     ]
   },
