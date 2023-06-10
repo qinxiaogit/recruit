@@ -1,0 +1,60 @@
+version: '3'
+
+networks:
+  laravel:
+services:
+  php:
+    build:
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./:/var/www/html
+      - type: bind
+        source: ./
+        target: /workspace
+    networks:
+      - laravel
+    links:
+      - mysqldb
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - laravel
+    volumes:
+      - "./dockerfiles/redis.conf:/path/to/redis.conf"
+  mysqldb:
+    image: mysql:5.7
+    container_name: mysql.local
+    restart: always
+    environment:
+      - MYSQL_DATABASE=recruit
+      - MYSQL_ROOT_PASSWORD=1234567@1dmaxaxa
+      - MYSQL_USER=button
+      - MYSQL_PASSWORD=hellobutton
+    ports:
+      - "8306:3306"
+    volumes:
+      - "./data/db/mysql:/var/lib/mysql"
+    networks:
+      - laravel
+
+#  composer:
+#    build:
+#      context: ./dockerfiles
+#      dockerfile: php.dockerfile
+#      args:
+#        - UID=${UID:-1000}
+#        - GID=${GID:-1000}
+#    volumes:
+#      - ./src:/var/www/html
+#    depends_on:
+#      - php
+#    entrypoint: [ 'composer', '--ignore-platform-reqs' ]
+#    networks:
+#      - laravel
