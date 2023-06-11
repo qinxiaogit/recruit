@@ -12,7 +12,7 @@
           </el-option>
         </el-select>
       </template>
-      <el-button @click="fetchData" type="primary">搜索</el-button>
+      <el-button style="margin-left: 10px;" @click="fetchData" type="primary">搜索</el-button>
     </div>
     <el-table
       v-loading="listLoading"

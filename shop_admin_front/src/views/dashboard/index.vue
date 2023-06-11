@@ -13,7 +13,6 @@
           :action="postUrl"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
-
           :headers="fileToken"
         >
           <img v-if="form.logo" :src="form.logo" style="width: 160px;" class="avatar">

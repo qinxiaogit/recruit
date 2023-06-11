@@ -108,8 +108,8 @@ export const constantRoutes = [
         path:"reportList",
         name:"reportList",
         component: () => import('@/views/job/report'),
-        meta: { title: '报名明细', icon: 'el-icon-cpu' },
-        hidden: true
+        meta: { title: '报名信息', icon: 'el-icon-cpu' },
+        hidden: false
       }
     ]
   },

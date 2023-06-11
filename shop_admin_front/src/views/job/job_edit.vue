@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="职位名称" style="width: 220px;">
+    <el-form ref="form" :model="form" label-width="220px">
+      <el-form-item label="职位名称" style="width: 420px;">
         <el-input v-model="form.name"/>
       </el-form-item>
       <el-form-item label="职位分类">
@@ -77,6 +77,29 @@
         <el-input-number v-model="form.age_end" :min="0" :max="100" label="招募人数"
                          style="width: 160px;margin-left: 10px;"></el-input-number>
       </el-form-item>
+
+      <el-form-item label="联系方式-二维码">
+        <el-upload
+          class="avatar-uploader"
+          :action="postUrl"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :headers="fileToken"
+        >
+          <img v-if="form.contact_qrcode" :src="form.contact_qrcode" style="width: 160px;" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
+
+      <el-form-item label="联系方式-手机号" style="width: 420px;">
+        <el-input v-model="form.contact_mobile"/>
+      </el-form-item>
+      <el-form-item label="联系方式-QQ" style="width: 420px;">
+        <el-input v-model="form.contact_qq"/>
+      </el-form-item>
+      <el-form-item label="联系方式-微信" style="width: 420px;">
+        <el-input v-model="form.contact_wx"/>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">确定</el-button>
         <el-button @click="onCancel">取消</el-button>
@@ -86,6 +109,8 @@
 </template>
 
 <script>
+
+    import {getToken} from '@/utils/auth'
     import {SelectJobCat, JobCateTree} from '@/api/jobCat' ;
     import {showJob, createOrEditJob,EditJob} from '@/api/jobs' ;
 
@@ -108,15 +133,26 @@
                     unit: "",
                     age_start: 0,
                     age_end: 0,
+                    contact_qrcode:"",
+                    contact_mobile:"",
+                    contact_qq:"",
+                    contact_wx:"",
                 },
                 options: [],
                 value: [],
+                fileToken: {},
+                postUrl: ""
             }
         },
         created() {
             this.initOption()
+            this.fileToken['Authorization'] = getToken();
+            this.postUrl = process.env.VUE_APP_BASE_API + "v1/public/upload"
         },
         methods: {
+            handleAvatarSuccess(res, file) {
+                this.form.contact_qrcode = res.data.domain + res.data.path;
+            },
             handleCascaderChange() {
 
             },
