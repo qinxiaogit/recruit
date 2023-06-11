@@ -169,6 +169,10 @@ class JobsAPIController extends AppBaseController
         if ($status > 0) {
             $where['status'] = $status;
         }
+        $jobId = $request->post('job_id');
+        if ($jobId) {
+            $where['job_id'] = $jobId;
+        }
         $query = DB::table("job_report_records");
         if (!empty($where)) {
             $query = $query->where($where);
@@ -221,7 +225,8 @@ class JobsAPIController extends AppBaseController
         ])->update([
             'status' => $status,
             'reason' => $reason,
+            'updated_at' => date("Y-m-d H:i:s")
         ]);
-        return $this->sendResponse(['result'=>$res,"sql"=>DB::getQueryLog()],"操作成功");
+        return $this->sendResponse(['result' => $res, "sql" => DB::getQueryLog()], "操作成功");
     }
 }
