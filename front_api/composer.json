@@ -9,9 +9,21 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5|^8.0",
+        "doctrine/dbal": "~2.3",
         "fideloper/proxy": "^4.4",
+        "fruitcake/laravel-cors": "^2.2",
+        "infyomlabs/adminlte-templates": "^3.0",
+        "infyomlabs/generator-builder": "^1.0",
+        "infyomlabs/laravel-generator": "^1.0",
+        "infyomlabs/laravel-ui-adminlte": "^1.0",
+        "infyomlabs/swagger-generator": "^3.2",
+        "jacobcyl/ali-oss-storage": "^2.1",
         "laravel/framework": "^6.20.26",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "laravel/ui": "^1.0",
+        "laravelcollective/html": "^6.0",
+        "overtrue/laravel-filesystem-qiniu": "^1.0",
+        "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^1.16.15",
