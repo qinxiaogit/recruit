@@ -32,4 +32,18 @@ class WechatAPIController extends AppBaseController
         $code = $request->post("code");
         return $this->app->auth->session($code);
     }
+
+    /**
+     * @param Request $request
+     * @return array
+     * @throws \EasyWeChat\Kernel\Exceptions\DecryptException
+     */
+    public function decode(Request $request)
+    {
+        $session = $request->post("session");
+        $iv = $request->post("iv");
+        $encryptedData = $request->post("encryptedData");
+
+        return $this->app->encryptor->decryptData($session,$iv,$encryptedData);
+    }
 }

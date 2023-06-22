@@ -30,6 +30,7 @@ Route::group([
 
     Route::Group(['prefix'=>'wechat'],function () {
         Route::post('login', 'API\\WechatAPIController@login');
+        Route::post('decode', 'API\\WechatAPIController@decode');
     });
 
 });
