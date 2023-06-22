@@ -59,13 +59,12 @@ class WechatAPIController extends AppBaseController
         if (empty($user)) {
             $user = new  User();
             $user->mobile = $mobile;
-            $user->password =  Hash::make('123456');
+            $user->password = Hash::make('123456');
             $user->save();
         }
-        DB::enableQueryLog();
-        $credentials = request(['mobile', 'password']);
+        $credentials = ['mobile' => $mobile, 'password' => '123456'];
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['msg' => 'Unauthorized', 'code' => 400,'sql'=>DB::getQueryLog()], 200);
+            return response()->json(['msg' => 'Unauthorized', 'code' => 400, 'sql' => DB::getQueryLog()], 200);
         }
 
         return $this->respondWithToken($token);
