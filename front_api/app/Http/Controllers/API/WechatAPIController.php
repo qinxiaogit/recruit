@@ -49,8 +49,7 @@ class WechatAPIController extends AppBaseController
         $iv = $request->post("iv");
         $encryptedData = $request->post("encryptedData");
 
-//        $avatar = $request->post('avatar');
-//        $nickname = $request->post('nickname');
+        $openid = $request->post('openid');
 
         $wechatData = $this->app->encryptor->decryptData($session, $iv, $encryptedData);
         $mobile = $wechatData['phoneNumber'];
@@ -60,6 +59,7 @@ class WechatAPIController extends AppBaseController
             $user = new  User();
             $user->mobile = $mobile;
             $user->password = Hash::make('123456');
+            $user->openid = $openid;
             $user->save();
         }
         $credentials = ['mobile' => $mobile, 'password' => '123456'];

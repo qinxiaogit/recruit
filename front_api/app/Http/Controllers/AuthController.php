@@ -103,4 +103,17 @@ class AuthController extends Controller
             'aaa' => '2'
         ]);
     }
+
+    /**
+     * @param Request $request
+     */
+    public function update(Request $request){
+        $avatar = $request->post('avatar');
+        $nickname = $request->post('nickname');
+        $user = auth()->user();
+        $user->nickname = $nickname;
+        $user->avatar = $avatar;
+        $user->save();
+        return response()->json($user);
+    }
 }
