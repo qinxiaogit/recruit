@@ -8,6 +8,7 @@ use App\Http\Controllers\AppBaseController;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Overtrue\LaravelWeChat\Facade;
 
@@ -61,9 +62,10 @@ class WechatAPIController extends AppBaseController
             $user->password =  Hash::make('123456');
             $user->save();
         }
+        DB::enableQueryLog();
         $credentials = request(['mobile', 'password']);
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['msg' => 'Unauthorized', 'code' => 400], 200);
+            return response()->json(['msg' => 'Unauthorized', 'code' => 400,'sql'=>DB::getQueryLog()], 200);
         }
 
         return $this->respondWithToken($token);
