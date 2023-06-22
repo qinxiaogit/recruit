@@ -6,11 +6,14 @@ use App\Http\Requests\API\CreateStoreAPIRequest;
 use App\Http\Requests\API\UpdateStoreAPIRequest;
 use App\Models\BalanceLog;
 use App\Models\Store;
+use App\Models\StoreAccount;
 use App\Repositories\AuditLogRepository;
+use App\Repositories\StoreAccountRepository;
 use App\Repositories\StoreRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Response;
 
 /**
@@ -21,43 +24,17 @@ class StoreAPIController extends AppBaseController
 {
     /** @var  StoreRepository */
     private $storeRepository;
+    protected $storeAdminRepository;
 
-    public function __construct(StoreRepository $storeRepo)
+    public function __construct(StoreRepository $storeRepo, StoreAccountRepository $storeAccountRepo)
     {
         $this->storeRepository = $storeRepo;
+        $this->storeAdminRepository = $storeAccountRepo;
     }
 
-    /**
-     * Display a listing of the Store.
-     * GET|HEAD /stores
-     *
-     * @param Request $request
-     * @return Response
-     */
-    public function index(Request $request)
-    {
-
-        $where = [];
-        $name = $request->post('name');
-        $status = $request->post('status');
-        if (!empty($name)) {
-            $where['name'] = $name;
-        }
-        if (intval($status) !== -1) {
-            $where['status'] = intval($status);
-        }
-        $stores = $this->storeRepository->all(
-            $where,
-            $request->post('skip'),
-            $request->post('limit')
-        );
-        $data = [
-            'items' => $stores->toArray(),
-            'total' => Store::where($where)->count(),
-        ];
-        return $this->sendResponse($data, 'Stores retrieved successfully');
+    public function index(){
+        return $this->sendResponse([],'success');
     }
-
     /**
      * Store a newly created Store in storage.
      * POST /stores
@@ -68,9 +45,30 @@ class StoreAPIController extends AppBaseController
      */
     public function store(CreateStoreAPIRequest $request)
     {
-        $input = $request->all();
+        $logoArr = $request->post('logoList');
+        $busList = $request->post('busList');
+        $username= $request->post('username');
 
-        $store = $this->storeRepository->create($input);
+        $storeData = [
+            'name' => $request->post('store_name'),
+            'logo' => $logoArr[0]['url'] ?? '',
+            'business_license' => $busList[0]['url'] ?? '',
+        ];
+
+        //检查账号是否存在
+        $storeAccount = StoreAccount::where(['username'=>$username])->first();
+        if(!empty($storeAccount)){
+            return $this->sendError('该账号已存在，请切换账号重试');
+        }
+        $store = $this->storeRepository->create($storeData);
+        //保存成功-生成店铺账号信息
+        if ($store->save()) {
+            $storeAccount = $this->storeAdminRepository->create([
+                'username' => $username,
+                'password' => Hash::make($request->post('password')),
+            ]);
+            $storeAccount->save();
+        }
 
         return $this->sendResponse($store->toArray(), 'Store saved successfully');
     }
@@ -219,10 +217,10 @@ class StoreAPIController extends AppBaseController
         if (empty($store)) {
             return $this->sendError('商户数据异常');
         }
-        if($amount<=0){
+        if ($amount <= 0) {
             return $this->sendError('操作金额异常');
         }
-        if($direction == 2 && $amount>$store->balance) {//扣除不够
+        if ($direction == 2 && $amount > $store->balance) {//扣除不够
             return $this->sendError('余额不足');
         }
 
@@ -233,12 +231,12 @@ class StoreAPIController extends AppBaseController
         $balance->reason = $reason;
         $balance->uid = auth()->id();
         $balance->source = 1;
-        if($balance->save()){
-            if ($direction == 1){
-                DB::table('stores')->where('id','=',$storeId)->increment('balance',$amount);
+        if ($balance->save()) {
+            if ($direction == 1) {
+                DB::table('stores')->where('id', '=', $storeId)->increment('balance', $amount);
 
-            }else{
-                DB::table('stores')->where('id','=',$storeId)->decrement('balance',$amount);
+            } else {
+                DB::table('stores')->where('id', '=', $storeId)->decrement('balance', $amount);
             }
         }
         return $this->sendResponse([$store->balance], "操作成功");

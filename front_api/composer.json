@@ -23,7 +23,9 @@
         "laravel/ui": "^1.0",
         "laravelcollective/html": "^6.0",
         "overtrue/laravel-filesystem-qiniu": "^1.0",
-        "tymon/jwt-auth": "^1.0"
+        "overtrue/wechat": "~4.0",
+        "tymon/jwt-auth": "^1.0",
+        "overtrue/laravel-wechat": "^5.0"
     },
     "require-dev": {
         "facade/ignition": "^1.16.15",
@@ -35,7 +37,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "easywechat-composer/easywechat-composer": true
+        }
     },
     "extra": {
         "laravel": {

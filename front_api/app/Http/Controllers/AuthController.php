@@ -26,9 +26,9 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $credentials = request(['username', 'password']);
+        $credentials = request(['mobile', 'password']);
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['msg' => 'Unauthorized', 'code' => 400], 200);
         }
 
         return $this->respondWithToken($token);
@@ -56,7 +56,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['code'=>20000]);
+        return response()->json(['code' => 20000]);
     }
 
     /**
@@ -91,7 +91,8 @@ class AuthController extends Controller
     /**
      * @desc 注册用户
      */
-    public function register(){
+    public function register()
+    {
         $user = new User();
         $user->username = 'admin';
         $user->password = Hash::make('123456');
@@ -99,9 +100,7 @@ class AuthController extends Controller
         $user->save();
         return response()->json([
             'access_token' => $user->id,
-            'aaa'=>'2'
+            'aaa' => '2'
         ]);
     }
-
-
 }

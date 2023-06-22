@@ -11,7 +11,7 @@ class StoreAccount extends  Authenticatable implements JWTSubject
 {
     use SoftDeletes;
 
-    public $table = 'super_admins';
+    public $table = 'store_account';
 
 
     protected $dates = ['deleted_at'];

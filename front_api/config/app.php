@@ -180,6 +180,9 @@ return [
 
         Overtrue\LaravelFilesystem\Qiniu\QiniuStorageServiceProvider :: class,
         Jacobcyl\AliOSS\AliOssServiceProvider::class,
+
+        Overtrue\LaravelWeChat\ServiceProvider::class,
+
     ],
 
     /*
@@ -234,6 +237,9 @@ return [
         'Form'      => Collective\Html\FormFacade::class,
         'Html'      => Collective\Html\HtmlFacade::class,
         'Flash'     => Laracasts\Flash\Flash::class,
+
+        'EasyWeChat' => Overtrue\LaravelWeChat\Facade::class,
+
 
     ],
 

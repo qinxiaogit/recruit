@@ -26,22 +26,27 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
     Route::post('register','AuthController@register');
+
+
+    Route::Group(['prefix'=>'wechat'],function () {
+        Route::post('login', 'API\\WechatAPIController@login');
+    });
+
 });
 
 Route::group([
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'v1'
 
 ], function ($router) {
     Route::Group(['prefix'=>'public'],function () {
         Route::post('upload','PublicController@upload');
-
     });
 
 
      Route::Group(['prefix'=>'store'],function (){
         Route::post('','API\\StoreAPIController@index');
-        Route::post('audit','API\\StoreAPIController@audit');
+        Route::post('create','API\\StoreAPIController@store');
         Route::post('status','API\\StoreAPIController@status');
         Route::post('balance','API\\StoreAPIController@balance');
         Route::get('show','API\\StoreAPIController@show');
@@ -79,10 +84,3 @@ Route::group([
         Route::post('audit','API\\FeedBackAPIController@audit');
     });
 });
-
-
-
-
-
-
-//Route::resource('jobs', 'JobsAPIController');
