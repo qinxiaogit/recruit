@@ -44,6 +44,8 @@ Route::group([
     Route::Group(['prefix'=>'jobs'],function (){
         Route::post('','API\\JobsAPIController@index');
         Route::get('show','API\\JobsAPIController@show');
+        Route::get('record','API\\JobsAPIController@record');
+        Route::get('recommend','API\\JobsAPIController@recommend');
     });
 
     Route::Group(['prefix'=>'job_cat'],function (){

@@ -129,61 +129,105 @@ class JobsAPIController extends AppBaseController
         $jobData = $jobs->toArray();
         $store = Store::find($jobData['store_id']);
 
-        $data = [
-            'job' => $jobData,
-            'store' => $store
+        /**
+         * id: 1,
+         * name: '线上给文章配音投稿，在家轻松做',
+         * unit_desc: '50元/条',
+         * settlement: '日结',
+         * employ_count: '招300人',
+         * sex: '男',
+         * work_time: '06月16日-07月16日',
+         * age_range: '20-40',
+         * work_content: '工作内容',
+         * work_require: '岗位要求几年级啊加大节能加拿大加拿大缴纳\n' +
+         * '时间段斤斤计较大',
+         * salary_desc: '薪资说明',
+         * report_count: 1799,
+         * store_info: {
+         * name: '喵绘教育',
+         * logo: 'https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg',
+         * id: 1
+         * }
+         */
+        $settlementMap = [
+            '1' => '日结',
+            '2' => '周结',
+            '3' => '月结',
+            '4' => '完工结',
+            '5' => '其他'
         ];
-
-        return $this->sendResponse($data, 'Jobs retrieved successfully');
+        $workInfo = [
+            "id" => $jobData['id'],
+            "name" => $jobData['name'],
+            "unit_desc" => $jobData['salary'] . "/" . $jobData['unit'],
+            "settlement" => $settlementMap[$jobData['settlement']] ?? '',
+            "employ_count" => "招" . $jobData['employ_count'] . "人",
+            "sex" => (intval($jobData['sex']) === 1) ? '男' : ((intval($jobData['sex']) === 2) ? '女' : '不限'),
+            "work_time" => date("m-d", $jobData['work_start_time']) . "-" . date("m-d", $jobData['work_end_time']),
+            "age_range" => empty($jobData['age_start']) && empty($jobData['age_end']) ? '不限制' : $jobData['age_start'] . '-' . $jobData['age_end'],
+            "work_content" => $jobData['work_content'],
+            "salary_desc" => $jobData['salary_desc'],
+            "work_require" => $jobData['work_require'],
+            "report_count" => $jobData['report_count'],
+            "store_info" => [
+                "name" => $store['name'],
+                "logo" => $store['logo'],
+                'id' => $store['id']
+            ]
+        ];
+        return $this->sendResponse($workInfo, 'Jobs retrieved successfully');
     }
 
-    /**
-     * Update the specified Jobs in storage.
-     * PUT/PATCH /jobs/{id}
-     *
-     * @param int $id
-     * @param UpdateJobsAPIRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdateJobsAPIRequest $request)
+    public function recommend()
     {
-        $input = $request->all();
-
-        /** @var Jobs $jobs */
-        $jobs = $this->jobsRepository->find($id);
-
-        if (empty($jobs)) {
-            return $this->sendError('Jobs not found');
+        $query = DB::table("jobs AS j")->leftJoin("stores AS s", 'j.store_id', '=', 's.id')
+            ->where('balance', '>', 0)
+            ->where(['s.status' => 1])
+            ->where(['j.status' => 1]);
+        if (!empty($oneCateId)) {
+            $query->where(['one_cate_id' => $oneCateId]);
         }
+        $lists = $query->orderBy('is_top', 'desc')
+            ->orderBy('sort', 'asc')
+            ->limit(10)
+            ->get(["j.id", "is_top", "j.name", "unit", 'salary', "s.name as store_name", "report_count", "one_cate_id", "two_cate_id"])
+            ->toArray();
+        $oneCateIdArr = array_column($lists, 'one_cate_id');
+        $twoCateIdArr = array_column($lists, 'two_cate_id');
 
-        $jobs = $this->jobsRepository->update($input, $id);
-
-        return $this->sendResponse($jobs->toArray(), 'Jobs updated successfully');
+        $cateIdArr = array_merge($oneCateIdArr, $twoCateIdArr);
+        $catArr = [];
+        if ($cateIdArr) {
+            $catArr = DB::table("job_cate")->whereIn('id', $cateIdArr)->get(["id", "name"])->toArray();
+            $catArr = array_column($catArr, 'name', 'id');
+        }
+        foreach ($lists as $key => $list) {
+            $list = json_decode(json_encode($list), true);
+            $tags = [];
+            if (isset($catArr[$list['one_cate_id']])) {
+                $tags[] = $catArr[$list['one_cate_id']];
+            }
+            if (isset($catArr[$list['two_cate_id']])) {
+                $tags[] = $catArr[$list['two_cate_id']];
+            }
+            $list['unit_desc'] = $list['salary'] . "/" . $list['unit'];
+            $list['tag'] = $tags;
+            $lists[$key] = $list;
+        }
+        return $this->sendResponse($lists, 'Jobs retrieved successfully');
     }
 
-    /**
-     * Remove the specified Jobs from storage.
-     * DELETE /jobs/{id}
-     *
-     * @param int $id
-     *
-     * @return Response
-     * @throws \Exception
-     *
-     */
-    public function destroy($id)
+    public function record(Request $request)
     {
-        /** @var Jobs $jobs */
-        $jobs = $this->jobsRepository->find($id);
-
-        if (empty($jobs)) {
-            return $this->sendError('Jobs not found');
+        $jobId = $request->get('job_id');
+        $reportArr = DB::table('job_report_records')->where([
+            'job_id' => $jobId
+        ])->limit(8)->get('uid')->toArray();
+        $uidArr = array_column($reportArr, 'uid');
+        if (!empty($uidArr)) {
+            $uidArr = AppUser::whereIn('id', $uidArr)->get()->toArray();
         }
-
-        $jobs->delete();
-
-        return $this->sendSuccess('Jobs deleted successfully');
+        return $this->sendResponse($uidArr, 'Jobs retrieved successfully');
     }
 
     /**
