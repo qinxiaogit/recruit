@@ -172,10 +172,15 @@ class JobsAPIController extends AppBaseController
             "store_info" => [
                 "name" => $store['name'],
                 "logo" => $store['logo'],
-                'id' => $store['id']
-            ]
+                'id' => $store['id'],
+            ],
+            "contact_qrcode" => $jobData['contact_qrcode'] ?? '',
+            "contact_qq" => $jobData['contact_qq'] ?? '',
+            "contact_wx" => $jobData['contact_wx'] ?? '',
+            "contact_mobile" => $jobData['contact_mobile'] ?? '',
+            "current_date" => date("Y-m-d H:i:s")
         ];
-        DB::table('jobs')->where(['id'=>$id])->increment('view_count', 1);
+        DB::table('jobs')->where(['id' => $id])->increment('view_count', 1);
 
         return $this->sendResponse($workInfo, 'Jobs retrieved successfully');
     }
@@ -239,12 +244,12 @@ class JobsAPIController extends AppBaseController
     public function report(Request $request)
     {
         $jobId = $request->post('job_id');
-        $uid   = auth()->id();
+        $uid = auth()->id();
         $jobs = JobReportRecords::where([
-            'job_id'=>$jobId,
-            'uid' =>$uid
+            'job_id' => $jobId,
+            'uid' => $uid
         ])->first();
-        if(!empty($jobs)){
+        if (!empty($jobs)) {
             return $this->sendError('已经报名了，无需重复报名');
         }
         $jobReportRecord = new JobReportRecords();
@@ -252,10 +257,10 @@ class JobsAPIController extends AppBaseController
         $jobReportRecord->uid = $uid;
         $jobReportRecord->save();
 
-        DB::table('jobs')->where(['id'=>$jobId])->increment('report_count', 1);
+        DB::table('jobs')->where(['id' => $jobId])->increment('report_count', 1);
 
 
-        $this->sendResponse([],'报名成功');
+        $this->sendResponse([], '报名成功');
 
     }
 
