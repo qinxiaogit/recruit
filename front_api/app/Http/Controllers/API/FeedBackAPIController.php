@@ -97,6 +97,9 @@ class FeedBackAPIController extends AppBaseController
         if (!empty($report)) {
             return $this->sendError('你已经举报过该职位，等待管理员处理');
         }
+        $imgJson = $request->post('img_json');
+
+        $urlArr = array_column($imgJson,'url');
 
         $feedback = new FeedBack();
         $feedback->feed_uid = auth()->id();
@@ -104,7 +107,8 @@ class FeedBackAPIController extends AppBaseController
         $feedback->feed_type = $request->post('feed_type');
         $feedback->contact_method = $request->post('contact_method');
         $feedback->content = $request->post('content');
-        $feedback->img_json = $request->post('img_json');
+        $feedback->img_json = json_encode($urlArr);
+        $feedback->status = 0;
         $feedback->save();
         return $this->sendResponse([], '举报成功');
     }
