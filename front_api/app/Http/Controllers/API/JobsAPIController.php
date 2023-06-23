@@ -164,7 +164,7 @@ class JobsAPIController extends AppBaseController
             "employ_count" => "招" . $jobData['employ_count'] . "人",
             "sex" => (intval($jobData['sex']) === 1) ? '男' : ((intval($jobData['sex']) === 2) ? '女' : '不限'),
             "work_time" => date("m-d", $jobData['work_start_time']) . "-" . date("m-d", $jobData['work_end_time']),
-            "age_range" => (empty($jobData['age_start']) && empty($jobData['age_end']) )? '' :( $jobData['age_start'] . '-' . $jobData['age_end']),
+            "age_range" => (empty($jobData['age_start']) && empty($jobData['age_end'])) ? '' : ($jobData['age_start'] . '-' . $jobData['age_end']),
             "work_content" => $jobData['work_content'],
             "salary_desc" => $jobData['salary_desc'],
             "work_require" => $jobData['work_require'],
@@ -175,6 +175,8 @@ class JobsAPIController extends AppBaseController
                 'id' => $store['id']
             ]
         ];
+        DB::table('jobs')->where(['id'=>$id])->increment('view_count', 1);
+
         return $this->sendResponse($workInfo, 'Jobs retrieved successfully');
     }
 
@@ -236,48 +238,25 @@ class JobsAPIController extends AppBaseController
      */
     public function report(Request $request)
     {
-        $where = [];
-        $status = $request->post('status');
-        if ($status > 0) {
-            $where['status'] = $status;
-        }
         $jobId = $request->post('job_id');
-        if ($jobId) {
-            $where['job_id'] = $jobId;
+        $uid   = auth()->id();
+        $jobs = JobReportRecords::where([
+            'job_id'=>$jobId,
+            'uid' =>$uid
+        ])->first();
+        if(!empty($jobs)){
+            return $this->sendError('已经报名了，无需重复报名');
         }
-        $query = DB::table("job_report_records");
-        if (!empty($where)) {
-            $query = $query->where($where);
-        }
-        $skip = $request->post('skip');
-        $limit = $request->post('limit');
+        $jobReportRecord = new JobReportRecords();
+        $jobReportRecord->job_id = $jobId;
+        $jobReportRecord->uid = $uid;
+        $jobReportRecord->save();
 
-        $items = $query->offset($skip)->limit($limit)->get()->toArray();
-        $total = $query->count();
+        DB::table('jobs')->where(['id'=>$jobId])->increment('report_count', 1);
 
 
-        $items = json_decode(json_encode($items), true);
-        $storeIdArr = array_column($items, 'uid');
+        $this->sendResponse([],'报名成功');
 
-        $stores = AppUser::whereIn('id', $storeIdArr)->get()->toArray();
-
-        $storeMap = array_column($stores, null, 'id');
-        foreach ($items as $key => $item) {
-            if (isset($storeMap[$item['uid']])) {
-                $item['report_user'] = [
-                    'avatar' => $storeMap[$item['uid']]['avatar'] ?? '',
-                    'nickname' => $storeMap[$item['uid']]['nickname'] ?? '',
-                    'mobile' => $storeMap[$item['uid']]['mobile'] ?? '',
-                    'sex' => $storeMap[$item['uid']]['sex'] ?? '',
-                ];
-            }
-            $items[$key] = $item;
-        }
-
-        return $this->sendResponse([
-            'items' => $items,
-            'total' => $total,
-        ], "拉取成功");
     }
 
     /**
@@ -286,19 +265,14 @@ class JobsAPIController extends AppBaseController
      */
     public function reportStatus(Request $request)
     {
-        $reportId = $request->post('report_id');
-        $status = $request->post('status');//1.录用，2.不录用
-        $reason = $request->post('reason');
+        $jobId = $request->post('job_id');
 
-        DB::enableQueryLog();
+
         $res = DB::table("job_report_records")->where([
-            "id" => $reportId,
-            "status" => 0
-        ])->update([
-            'status' => $status,
-            'reason' => $reason,
-            'updated_at' => date("Y-m-d H:i:s")
-        ]);
-        return $this->sendResponse(['result' => $res, "sql" => DB::getQueryLog()], "操作成功");
+            "job_id" => $jobId,
+            "uid" => auth()->id()
+        ])->first();
+        return $this->sendResponse($res, "操作成功");
     }
+
 }
