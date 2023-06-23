@@ -23,7 +23,7 @@ class Authenticate
     public function handle($request, \Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->guest()) {
-            return response(['message' => "未登录", 'code' => 401], 200);
+            return response(['message' => "未登录", 'code' => 401 ,'status'=>"fail"], 200);
         }
 
         return $next($request);

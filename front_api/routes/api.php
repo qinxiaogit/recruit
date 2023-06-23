@@ -37,6 +37,17 @@ Route::group([
 });
 
 Route::group([
+    'middleware' => 'api',
+    'prefix' => 'v1'
+
+], function ($router) {
+    Route::Group(['prefix'=>'jobs'],function (){
+        Route::post('','API\\JobsAPIController@index');
+    });
+});
+
+
+Route::group([
     'middleware' => 'auth:api',
     'prefix' => 'v1'
 
@@ -44,7 +55,6 @@ Route::group([
     Route::Group(['prefix'=>'public'],function () {
         Route::post('upload','PublicController@upload');
     });
-
 
      Route::Group(['prefix'=>'store'],function (){
         Route::post('','API\\StoreAPIController@index');
@@ -55,7 +65,6 @@ Route::group([
     });
 
     Route::Group(['prefix'=>'jobs'],function (){
-        Route::post('','API\\JobsAPIController@index');
         Route::put('{id}','API\\JobsAPIController@update');
         Route::get('{id}','API\\JobsAPIController@show');
         Route::post('store','API\\JobsAPIController@store');
