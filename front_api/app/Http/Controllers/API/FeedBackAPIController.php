@@ -6,10 +6,13 @@ use App\Http\Requests\API\CreateFeedBackAPIRequest;
 use App\Http\Requests\API\UpdateFeedBackAPIRequest;
 use App\Models\AppUser;
 use App\Models\FeedBack;
+use App\Models\Jobs;
+use App\Models\Store;
 use App\Repositories\AuditLogRepository;
 use App\Repositories\FeedBackRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 /**
@@ -35,161 +38,74 @@ class FeedBackAPIController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $where = [];
-        $status = $request->get("status");
-        $feed_type = $request->get("feed_type");
+        $page = $request->get('page');
+        $size = $request->get('size');
 
-        if ($status >= 0) {
-            $where['status'] = $status;
-        }
-        if ($feed_type) {
-            $where['feed_type'] = $feed_type;
-        }
-        $feeds = $this->feedBackRepository->all(
-            $where,
-            $request->get('skip'),
-            $request->get('limit')
-        );
-        $items = $feeds->toArray();
+        $feeds = DB::table("feed_back")
+            ->where(['feed_uid' => auth()->id()])
+            ->orderBy('id', 'desc')
+            ->offset(($page - 1) * $size)
+            ->limit($size)
+            ->get()
+            ->toArray();
 
-        $feedUidArr = array_column($items, 'feed_uid');
+        $jobIdArr = array_column($feeds, 'job_id');
 
-        $appUsers = AppUser::whereIn('id', $feedUidArr)->get()->toArray();
-        $appUsersMap = array_column($appUsers, null, 'id');
+        $jobArr = Jobs::whereIn('id', $jobIdArr)->get()->toArray();
+        $jobArrMap = array_column($jobArr, null, 'id');
 
-        foreach ($items as $key => $item) {
-            $item['app_user'] = [
-                'name' => $appUsersMap[$item['feed_uid']]['nickename'] ?? '',
-                'logo' => $appUsersMap[$item['feed_uid']]['avatar'] ?? '',
-            ];
-            $item['img_json_arr'] = json_decode($item['img_json'], true);
-            $items[$key] = $item;
-        }
+        $storeIdArr = array_column($jobArr, 'store_id');
 
-        $data = [
-            'items' => $items,
-            'total' => FeedBack::where($where)->count(),
+        $storeArr = Store::whereIn('id', $storeIdArr)->get()->toArray();
+        $storeArrMap = array_column($storeArr, null, 'id');
+
+        $reportTypeText = [
+            1 => "收取费用",
+            2 => "工资拖欠",
+            3 => "放鸽子",
+            4 => "虚假信息",
+            5 => "刷单博彩",
+            6 => "其他"
         ];
-        return $this->sendResponse($data, 'Jobs retrieved successfully');
+        foreach ($feeds as $key => $item) {
+            $jobId = $item['job_id'];
+            $item['store_name'] = $storeArrMap[$jobId]['name'] ?? '';
+            $item['name'] = $jobArrMap[$jobId]['name'] ?? '';
+            $item['report_count'] = $jobArrMap[$jobId]['report_count'] ?? '';
+            $item['unit_desc'] = ($jobArrMap[$jobId]['salary'] ?? '') . "/" . ($jobArrMap[$jobId]['unit'] ?? '');
+            $item['img_json_arr'] = json_decode($item['img_json'], true);
+            $item['tag'] = [];
+            $item['report_type_text'] = $reportTypeText[$item['feed_type']] ?? "";
+            $item['report_date'] = $item['created_at'];
+            $feeds[$key] = $item;
+        }
+        return $this->sendResponse(['list' => $feeds], 'Jobs retrieved successfully');
     }
 
-    /**
-     * Store a newly created FeedBack in storage.
-     * POST /feedBack
-     *
-     * @param CreateFeedBackAPIRequest $request
-     *
-     * @return Response
-     */
-    public function store(CreateFeedBackAPIRequest $request)
+
+    public function total()
     {
-        $input = $request->all();
-
-        $feedBack = $this->feedBackRepository->create($input);
-
-        return $this->sendResponse($feedBack->toArray(), 'Feed Back saved successfully');
+        $total = DB::table("feed_back")->where(['feed_uid' => auth()->id()])->count();
+        return $this->sendResponse(['total' => $total], '拉取成功');
     }
 
-    /**
-     * Display the specified FeedBack.
-     * GET|HEAD /feedBack/{id}
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function show($id)
+    public function report(Request $request)
     {
-        /** @var FeedBack $feedBack */
-        $feedBack = $this->feedBackRepository->find($id);
+        $jobId = $request->post('job_id');
 
-        if (empty($feedBack)) {
-            return $this->sendError('Feed Back not found');
+        $report = DB::table("feed_back")->where(['feed_uid' => auth()->id(), 'job_id' => $jobId])->first();
+        if (!empty($report)) {
+            return $this->sendError('你已经举报过该职位，等待管理员处理');
         }
 
-        return $this->sendResponse($feedBack->toArray(), 'Feed Back retrieved successfully');
-    }
-
-    /**
-     * Update the specified FeedBack in storage.
-     * PUT/PATCH /feedBack/{id}
-     *
-     * @param int $id
-     * @param UpdateFeedBackAPIRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdateFeedBackAPIRequest $request)
-    {
-        $input = $request->all();
-
-        /** @var FeedBack $feedBack */
-        $feedBack = $this->feedBackRepository->find($id);
-
-        if (empty($feedBack)) {
-            return $this->sendError('Feed Back not found');
-        }
-
-        $feedBack = $this->feedBackRepository->update($input, $id);
-
-        return $this->sendResponse($feedBack->toArray(), 'FeedBack updated successfully');
-    }
-
-    /**
-     * Remove the specified FeedBack from storage.
-     * DELETE /feedBack/{id}
-     *
-     * @param int $id
-     *
-     * @return Response
-     * @throws \Exception
-     *
-     */
-    public function destroy($id)
-    {
-        /** @var FeedBack $feedBack */
-        $feedBack = $this->feedBackRepository->find($id);
-
-        if (empty($feedBack)) {
-            return $this->sendError('Feed Back not found');
-        }
-
-        $feedBack->delete();
-
-        return $this->sendSuccess('Feed Back deleted successfully');
-    }
-
-    /**
-     * @desc 审核
-     * @param Request $request
-     * @return
-     * @throws \Exception
-     */
-    public function audit(Request $request)
-    {
-        $feedback = $this->feedBackRepository->find($request->post("id"));
-
-        $reason = $request->post('reason');
-        $status = $request->post('status');
-
-        if (empty($feedback)) {
-            return $this->sendError('反馈数据异常');
-        }
-        if ($feedback->status !== 0) {
-            return $this->sendError("反馈数据已审核了");
-        }
-        //审核驳回结果
-        $feedback->status = $status ? 2 : 1;
-        if ($feedback->save()) {
-            $adminLogRepository = new AuditLogRepository(app());
-            $adminLogRepository->create([
-                'reason' => $reason,
-                'result' => $status,
-                'uid' => auth()->id(),
-                'ref_id' => $request->post('id'),
-                'bus_type' => "feed_back"
-            ]);
-        }
-        return $this->sendResponse([], "操作成功");
+        $feedback = new FeedBack();
+        $feedback->feed_uid = auth()->id();
+        $feedback->job_id = $request->post('job_id');
+        $feedback->feed_type = $request->post('feed_type');
+        $feedback->contact_method = $request->post('contact_method');
+        $feedback->content = $request->post('content');
+        $feedback->img_json = $request->post('img_json');
+        $feedback->save();
+        return $this->sendResponse([], '举报成功');
     }
 }

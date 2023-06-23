@@ -100,8 +100,9 @@ Route::group([
     });
 
     Route::Group(['prefix'=>'feed_back'],function (){
-
-        Route::get('','API\\FeedBackAPIController@index');
+        Route::post('list','API\\FeedBackAPIController@index');
         Route::post('audit','API\\FeedBackAPIController@audit');
+        Route::post('total','API\\FeedBackAPIController@total');
+        Route::post('report','API\\FeedBackAPIController@report');
     });
 });
