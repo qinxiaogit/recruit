@@ -41,32 +41,48 @@ class JobsAPIController extends AppBaseController
     public function index(Request $request)
     {
         $where = [];
-        $jobs = $this->jobsRepository->all(
-            $where,
-            $request->get('skip'),
-            $request->get('limit')
-        );
-        $items = $jobs->toArray();
+        $page = $request->get('page');
+        $size = $request->get('size');
+        $query = DB::table("jobs AS j")->leftJoin("stores AS s", 'j.store_id', '=', 's.id')
+            ->where('balance', '>', 0)
+            ->where(['s.status' => 1])
+            ->where(['j.status' => 1]);
+        $lists = $query->orderBy('is_top', 'desc')
+            ->orderBy('sort', 'asc')
+            ->offset(($page - 1) * $size)
+            ->limit($size)
+            ->get(["j.id", "is_top", "j.name", "unit",'salary', "s.name as store_name", "report_count", "one_cate_id", "two_cate_id"])
+            ->toArray();
 
-        $storeIdArr = array_column($items, 'store_id');
+        $oneCateIdArr = array_column($lists, 'one_cate_id');
+        $twoCateIdArr = array_column($lists, 'two_cate_id');
 
-        $stores = Store::whereIn('id', $storeIdArr)->get()->toArray();
-        $storeMap = array_column($stores, null, 'id');
-
-        foreach ($items as $key => $item) {
-            $item['store'] = [
-                'name' => $storeMap[$item['store_id']]['name'] ?? '',
-                'logo' => $storeMap[$item['store_id']]['logo'] ?? '',
-            ];
-            $item['is_top'] = $item['is_top'] ? true : false;
-            $items[$key] = $item;
+        $cateIdArr = array_merge($oneCateIdArr, $twoCateIdArr);
+        $catArr = [];
+        if ($cateIdArr) {
+            $catArr = DB::table("job_cate")->whereIn('id', $cateIdArr)->get(["id", "name"])->toArray();
+            $catArr = array_column($catArr, 'name', 'id');
         }
-
-        $data = [
-            'items' => $items,
-            'total' => Jobs::where($where)->count(),
-        ];
-        return $this->sendResponse($data, 'Jobs retrieved successfully');
+        foreach ($lists as $key => $list) {
+            $list = json_decode(json_encode($list),true);
+            $tags = [];
+            if (isset($catArr[$list['one_cate_id']])) {
+                $tags[] = [
+                    'id' => $list['one_cate_id'],
+                    'name' => $catArr[$list['one_cate_id']]
+                ];
+            }
+            if (isset($catArr[$list['two_cate_id']])) {
+                $tags[] = [
+                    'id' => $list['two_cate_id'],
+                    'name' => $catArr[$list['two_cate_id']]
+                ];
+            }
+            $list['unit_desc'] = $list['salary']."/".$list['unit'];
+            $list['tags'] = $tags;
+            $lists[$key] = $list;
+        }
+        return $this->sendResponse(['list' => $lists], 'Jobs retrieved successfully');
     }
 
     /**

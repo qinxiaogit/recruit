@@ -55,7 +55,7 @@ Route::group([
     });
 
     Route::Group(['prefix'=>'jobs'],function (){
-        Route::get('','API\\JobsAPIController@index');
+        Route::post('','API\\JobsAPIController@index');
         Route::put('{id}','API\\JobsAPIController@update');
         Route::get('{id}','API\\JobsAPIController@show');
         Route::post('store','API\\JobsAPIController@store');
