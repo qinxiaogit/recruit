@@ -43,6 +43,7 @@ Route::group([
 ], function ($router) {
     Route::Group(['prefix'=>'jobs'],function (){
         Route::post('','API\\JobsAPIController@index');
+        Route::get('show','API\\JobsAPIController@show');
     });
 
     Route::Group(['prefix'=>'job_cat'],function (){
@@ -74,7 +75,6 @@ Route::group([
 
     Route::Group(['prefix'=>'jobs'],function (){
         Route::put('{id}','API\\JobsAPIController@update');
-        Route::get('{id}','API\\JobsAPIController@show');
         Route::post('store','API\\JobsAPIController@store');
         Route::post('report','API\\JobsAPIController@report');
         Route::post('report_status','API\\JobsAPIController@reportStatus');

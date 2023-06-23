@@ -117,16 +117,24 @@ class JobsAPIController extends AppBaseController
      *
      * @return Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
+        $id = $request->get('id');
         /** @var Jobs $jobs */
         $jobs = $this->jobsRepository->find($id);
 
         if (empty($jobs)) {
             return $this->sendError('Jobs not found');
         }
+        $jobData = $jobs->toArray();
+        $store = Store::find($jobData['store_id']);
 
-        return $this->sendResponse($jobs->toArray(), 'Jobs retrieved successfully');
+        $data = [
+            'job' => $jobData,
+            'store' => $store
+        ];
+
+        return $this->sendResponse($data, 'Jobs retrieved successfully');
     }
 
     /**

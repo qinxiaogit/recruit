@@ -39,8 +39,8 @@ class ConfAPIController extends AppBaseController
     public function stat()
     {
         $data = [
-            'join_num' => intval(time() % 60),
-            'push_money' => intval(time() % 60) + intval(time() % 3600) * 5,
+            'join_num' => intval(time() / 60),
+            'push_money' => intval(time() / 60) + intval(time() / 3600) * 5,
         ];
         return $this->sendResponse($data, '获取成功');
     }
