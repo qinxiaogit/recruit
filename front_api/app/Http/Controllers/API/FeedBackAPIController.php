@@ -109,6 +109,7 @@ class FeedBackAPIController extends AppBaseController
         $feedback->content = $request->post('content');
         $feedback->img_json = json_encode($urlArr);
         $feedback->status = 0;
+        $feedback->reason = '';
         $feedback->save();
         return $this->sendResponse([], '举报成功');
     }
