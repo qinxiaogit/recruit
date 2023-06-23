@@ -48,6 +48,9 @@ Route::group([
     Route::Group(['prefix'=>'job_cat'],function (){
         Route::get('tree','API\\JobCateAPIController@tree');
     });
+    Route::Group(['prefix'=>'conf'],function (){
+        Route::get('banner','API\\ConfAPIController@banner');
+    });
 });
 
 
