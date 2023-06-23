@@ -26,6 +26,7 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
     Route::post('update', 'AuthController@update');
+    Route::post('updateReal', 'AuthController@updateReal');
     Route::post('register','AuthController@register');
 
 

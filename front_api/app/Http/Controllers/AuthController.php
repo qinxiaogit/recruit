@@ -106,8 +106,10 @@ class AuthController extends Controller
 
     /**
      * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         $avatar = $request->post('avatar');
         $nickname = $request->post('nickname');
         $user = auth()->user();
@@ -116,4 +118,22 @@ class AuthController extends Controller
         $user->save();
         return response()->json($user);
     }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateReal(Request $request)
+    {
+        $realname = $request->post('real_name');
+        $sex = $request->post('sex');
+        $birthday = $request->post('birthday');
+        $user = auth()->user();
+        $user->real_name = $realname;
+        $user->sex = $sex;
+        $user->birthday = date("Ymd", strtotime($birthday));
+        $user->save();
+        return response()->json($user);
+    }
+
 }

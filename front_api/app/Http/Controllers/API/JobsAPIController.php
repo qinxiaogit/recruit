@@ -164,7 +164,7 @@ class JobsAPIController extends AppBaseController
             "employ_count" => "招" . $jobData['employ_count'] . "人",
             "sex" => (intval($jobData['sex']) === 1) ? '男' : ((intval($jobData['sex']) === 2) ? '女' : '不限'),
             "work_time" => date("m-d", $jobData['work_start_time']) . "-" . date("m-d", $jobData['work_end_time']),
-            "age_range" => empty($jobData['age_start']) && empty($jobData['age_end']) ? '不限制' : $jobData['age_start'] . '-' . $jobData['age_end'],
+            "age_range" => (empty($jobData['age_start']) && empty($jobData['age_end']) )? '' :( $jobData['age_start'] . '-' . $jobData['age_end']),
             "work_content" => $jobData['work_content'],
             "salary_desc" => $jobData['salary_desc'],
             "work_require" => $jobData['work_require'],
