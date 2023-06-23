@@ -97,7 +97,7 @@ class FeedBackAPIController extends AppBaseController
         if (!empty($report)) {
             return $this->sendError('你已经举报过该职位，等待管理员处理');
         }
-        $imgJson = $request->post('img_json');
+        $imgJson = json_decode($request->post('img_json'),true);
 
         $urlArr = array_column($imgJson,'url');
 
