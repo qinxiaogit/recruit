@@ -30,6 +30,18 @@ class ConfAPIController extends AppBaseController
                 "jumpType" => 2
             ]
         ];
-       return $this->sendResponse($banner,'获取成功');
+        return $this->sendResponse($banner, '获取成功');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function stat()
+    {
+        $data = [
+            'join_num' => intval(time() % 60),
+            'push_money' => intval(time() % 60) + intval(time() % 3600) * 5,
+        ];
+        return $this->sendResponse($data, '获取成功');
     }
 }
