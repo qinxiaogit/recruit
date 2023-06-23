@@ -67,6 +67,7 @@ class FeedBackAPIController extends AppBaseController
             5 => "刷单博彩",
             6 => "其他"
         ];
+        $feeds = json_decode(json_encode($feeds),true);
         foreach ($feeds as $key => $item) {
             $jobId = $item['job_id'];
             $item['store_name'] = $storeArrMap[$jobId]['name'] ?? '';
