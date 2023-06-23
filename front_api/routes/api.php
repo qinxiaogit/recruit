@@ -50,6 +50,7 @@ Route::group([
     });
     Route::Group(['prefix'=>'conf'],function (){
         Route::get('banner','API\\ConfAPIController@banner');
+        Route::get('stat','API\\ConfAPIController@stat');
     });
 });
 
