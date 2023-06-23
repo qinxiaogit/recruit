@@ -44,6 +44,10 @@ Route::group([
     Route::Group(['prefix'=>'jobs'],function (){
         Route::post('','API\\JobsAPIController@index');
     });
+
+    Route::Group(['prefix'=>'job_cat'],function (){
+        Route::get('tree','API\\JobCateAPIController@tree');
+    });
 });
 
 
@@ -77,7 +81,6 @@ Route::group([
         Route::get('','API\\JobCateAPIController@index');
         Route::get('all','API\\JobCateAPIController@all');
         Route::post('','API\\JobCateAPIController@store');
-        Route::get('tree','API\\JobCateAPIController@tree');
         Route::post('delete','API\\JobCateAPIController@delete');
         Route::put('{id}','API\\JobsAPIController@update');
         Route::get('select','API\\JobsAPIController@select');
