@@ -43,15 +43,19 @@ class JobsAPIController extends AppBaseController
         $where = [];
         $page = $request->get('page');
         $size = $request->get('size');
+        $oneCateId = $request->get('one_cate_id');
         $query = DB::table("jobs AS j")->leftJoin("stores AS s", 'j.store_id', '=', 's.id')
             ->where('balance', '>', 0)
             ->where(['s.status' => 1])
             ->where(['j.status' => 1]);
+        if (!empty($oneCateId)) {
+            $query->where(['one_cate_id' => $oneCateId]);
+        }
         $lists = $query->orderBy('is_top', 'desc')
             ->orderBy('sort', 'asc')
             ->offset(($page - 1) * $size)
             ->limit($size)
-            ->get(["j.id", "is_top", "j.name", "unit",'salary', "s.name as store_name", "report_count", "one_cate_id", "two_cate_id"])
+            ->get(["j.id", "is_top", "j.name", "unit", 'salary', "s.name as store_name", "report_count", "one_cate_id", "two_cate_id"])
             ->toArray();
 
         $oneCateIdArr = array_column($lists, 'one_cate_id');
@@ -64,7 +68,7 @@ class JobsAPIController extends AppBaseController
             $catArr = array_column($catArr, 'name', 'id');
         }
         foreach ($lists as $key => $list) {
-            $list = json_decode(json_encode($list),true);
+            $list = json_decode(json_encode($list), true);
             $tags = [];
             if (isset($catArr[$list['one_cate_id']])) {
                 $tags[] = [
@@ -78,7 +82,7 @@ class JobsAPIController extends AppBaseController
                     'name' => $catArr[$list['two_cate_id']]
                 ];
             }
-            $list['unit_desc'] = $list['salary']."/".$list['unit'];
+            $list['unit_desc'] = $list['salary'] . "/" . $list['unit'];
             $list['tags'] = $tags;
             $lists[$key] = $list;
         }
