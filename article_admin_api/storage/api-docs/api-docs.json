@@ -90,7 +90,7 @@
                 }
             }
         },
-        "api/v1/front/crouse/category": {
+        "/api/v1/front/course/category": {
             "get": {
                 "summary": "课程分类",
                 "operationId": "courseCategory",
@@ -104,7 +104,7 @@
                 }
             }
         },
-        "api/v1/front/crouse/init": {
+        "/api/v1/front/course/init": {
             "get": {
                 "summary": "课程初始化",
                 "operationId": "courseInitCategory",
@@ -118,7 +118,7 @@
                 }
             }
         },
-        "api/v1/front/crouse/list": {
+        "/api/v1/front/course/list": {
             "get": {
                 "summary": "课程分类",
                 "operationId": "courseListCategory",
@@ -160,7 +160,7 @@
                 }
             }
         },
-        "api/v1/front/home/init": {
+        "/api/v1/front/home/init": {
             "get": {
                 "summary": "首页初始化",
                 "operationId": "initSystem",
@@ -174,7 +174,7 @@
                 }
             }
         },
-        "api/v1/front/material/market": {
+        "/api/v1/front/material/market": {
             "get": {
                 "summary": "营销素材分类",
                 "operationId": "materialMarket",
@@ -188,7 +188,7 @@
                 }
             }
         },
-        "api/v1/front/material/circle": {
+        "/api/v1/front/material/circle": {
             "get": {
                 "summary": "营销素材圈",
                 "operationId": "courseListCategory",
@@ -238,7 +238,7 @@
                 }
             }
         },
-        "api/v1/front/material/collect": {
+        "/api/v1/front/material/collect": {
             "get": {
                 "summary": "营销素材收藏",
                 "operationId": "collectMShowCategory",
@@ -262,7 +262,7 @@
                 }
             }
         },
-        "api/v1/front/material/collectList": {
+        "/api/v1/front/material/collectList": {
             "get": {
                 "summary": "营销素材收藏列表",
                 "operationId": "collectListCategory",
@@ -296,7 +296,7 @@
                 }
             }
         },
-        "api/v1/front/resource/list": {
+        "/api/v1/front/resource/list": {
             "get": {
                 "summary": "店铺物料",
                 "operationId": "courseList222Category",
@@ -347,7 +347,7 @@
                 }
             }
         },
-        "api/v1/front/script/category": {
+        "/api/v1/front/script/category": {
             "get": {
                 "summary": "课程分类",
                 "operationId": "courseListCategory",
@@ -371,7 +371,7 @@
                 }
             }
         },
-        "api/v1/front/script/show": {
+        "/api/v1/front/script/show": {
             "get": {
                 "summary": "话术详情",
                 "operationId": "courseShowCategory",
@@ -419,7 +419,7 @@
                 }
             }
         },
-        "api/v1/front/script/collectList": {
+        "/api/v1/front/script/collectList": {
             "get": {
                 "summary": "话术收藏列表",
                 "operationId": "collect2ListCategory",

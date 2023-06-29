@@ -11,7 +11,7 @@ class ScriptController extends AppBaseController
 {
     /**
      * @OA\Get(
-     *     path="api/v1/front/script/category",
+     *     path="/api/v1/front/script/category",
      *     summary="课程分类",
      *     operationId="courseListCategory",
      *     @OA\Parameter(
@@ -48,7 +48,7 @@ class ScriptController extends AppBaseController
 
     /**
      * @OA\Get(
-     *     path="api/v1/front/script/show",
+     *     path="/api/v1/front/script/show",
      *     summary="话术详情",
      *     operationId="courseShowCategory",
      *     @OA\Parameter(
@@ -79,7 +79,7 @@ class ScriptController extends AppBaseController
             ],
             'collect_status' => 1,
         ];
-        $this->sendResponse($data, "话术详情");
+       return $this->sendResponse($data, "话术详情");
     }
 
     /**
@@ -106,12 +106,12 @@ class ScriptController extends AppBaseController
      */
     public function collect(Request $request)
     {
-        $this->sendResponse([], "收藏成功");
+       return $this->sendResponse([], "收藏成功");
     }
 
     /**
      * @OA\Get(
-     *     path="api/v1/front/script/collectList",
+     *     path="/api/v1/front/script/collectList",
      *     summary="话术收藏列表",
      *     operationId="collect2ListCategory",
      *     @OA\Parameter(
@@ -163,6 +163,6 @@ class ScriptController extends AppBaseController
                 ],
                 'collect_status' => 1,]
         ];
-        $this->sendResponse($data, "话术详情");
+       return $this->sendResponse($data, "话术详情");
     }
 }

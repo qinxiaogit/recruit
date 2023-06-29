@@ -11,7 +11,7 @@ class MaterialController extends AppBaseController
 {
     /**
      * @OA\Get(
-     *     path="api/v1/front/material/market",
+     *     path="/api/v1/front/material/market",
      *     summary="营销素材分类",
      *     operationId="materialMarket",
      *     @OA\Response(
@@ -60,7 +60,7 @@ class MaterialController extends AppBaseController
 
     /**
      * @OA\Get(
-     *     path="api/v1/front/material/circle",
+     *     path="/api/v1/front/material/circle",
      *     summary="营销素材圈",
      *     operationId="courseListCategory",
      *     @OA\Parameter(
@@ -141,7 +141,7 @@ class MaterialController extends AppBaseController
 
     /**
      * @OA\Get(
-     *     path="api/v1/front/material/collect",
+     *     path="/api/v1/front/material/collect",
      *     summary="营销素材收藏",
      *     operationId="collectMShowCategory",
      *     @OA\Parameter(
@@ -163,11 +163,11 @@ class MaterialController extends AppBaseController
      */
     public function collect(Request $request)
     {
-        $this->sendResponse([], "收藏成功");
+       return $this->sendResponse([], "收藏成功");
     }
     /**
      * @OA\Get(
-     *     path="api/v1/front/material/collectList",
+     *     path="/api/v1/front/material/collectList",
      *     summary="营销素材收藏列表",
      *     operationId="collectListCategory",
      *     @OA\Parameter(

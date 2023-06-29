@@ -15,7 +15,7 @@ class ResourceController extends AppBaseController
 {
     /**
      * @OA\Get(
-     *     path="api/v1/front/resource/list",
+     *     path="/api/v1/front/resource/list",
      *     summary="店铺物料",
      *     operationId="courseList222Category",
      *     @OA\Parameter(
@@ -78,6 +78,6 @@ class ResourceController extends AppBaseController
                 'mod' => 'dir',
             ]
         ];
-        $this->sendResponse($data, 'success');
+       return $this->sendResponse($data, 'success');
     }
 }

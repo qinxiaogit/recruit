@@ -11,7 +11,7 @@ class CourseController extends AppBaseController
 {
     /**
      * @OA\Get(
-     *     path="api/v1/front/crouse/category",
+     *     path="/api/v1/front/course/category",
      *     summary="课程分类",
      *     operationId="courseCategory",
      *     @OA\Response(
@@ -43,7 +43,7 @@ class CourseController extends AppBaseController
 
     /**
      * @OA\Get(
-     *     path="api/v1/front/crouse/init",
+     *     path="/api/v1/front/course/init",
      *     summary="课程初始化",
      *     operationId="courseInitCategory",
      *     @OA\Response(
@@ -94,7 +94,7 @@ class CourseController extends AppBaseController
 
     /**
      * @OA\Get(
-     *     path="api/v1/front/crouse/list",
+     *     path="/api/v1/front/course/list",
      *     summary="课程分类",
      *     operationId="courseListCategory",
      *     @OA\Parameter(

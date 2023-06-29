@@ -10,7 +10,7 @@ class HomeController extends AppBaseController
 {
     /**
      * @OA\Get(
-     *     path="api/v1/front/home/init",
+     *     path="/api/v1/front/home/init",
      *     summary="首页初始化",
      *     operationId="initSystem",
      *     @OA\Response(
