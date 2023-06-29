@@ -90,11 +90,365 @@
                 }
             }
         },
-        "/": {
+        "api/v1/front/crouse/category": {
             "get": {
+                "summary": "课程分类",
+                "operationId": "courseCategory",
                 "responses": {
                     "200": {
-                        "description": "Display a listing of projects."
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/crouse/init": {
+            "get": {
+                "summary": "课程初始化",
+                "operationId": "courseInitCategory",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/crouse/list": {
+            "get": {
+                "summary": "课程分类",
+                "operationId": "courseListCategory",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page for 分页",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The limit for 分页尺寸",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cate_id",
+                        "in": "query",
+                        "description": "分类id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/home/init": {
+            "get": {
+                "summary": "首页初始化",
+                "operationId": "initSystem",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/material/market": {
+            "get": {
+                "summary": "营销素材分类",
+                "operationId": "materialMarket",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/material/circle": {
+            "get": {
+                "summary": "营销素材圈",
+                "operationId": "courseListCategory",
+                "parameters": [
+                    {
+                        "name": "cate_id",
+                        "in": "query",
+                        "description": "分类id-默认0",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tag_id",
+                        "in": "query",
+                        "description": "子标签id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page for 分页",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The limit for 分页尺寸",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/material/collect": {
+            "get": {
+                "summary": "营销素材收藏",
+                "operationId": "collectMShowCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "话术id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/material/collectList": {
+            "get": {
+                "summary": "营销素材收藏列表",
+                "operationId": "collectListCategory",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page for 分页",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The limit for 分页尺寸",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/resource/list": {
+            "get": {
+                "summary": "店铺物料",
+                "operationId": "courseList222Category",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "搜索",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "parent_id",
+                        "in": "query",
+                        "description": "父级id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page for 分页",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The limit for 分页尺寸",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/script/category": {
+            "get": {
+                "summary": "课程分类",
+                "operationId": "courseListCategory",
+                "parameters": [
+                    {
+                        "name": "parent_id",
+                        "in": "query",
+                        "description": "分类id-默认0",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/script/show": {
+            "get": {
+                "summary": "话术详情",
+                "operationId": "courseShowCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "话术id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/script/collect": {
+            "get": {
+                "summary": "话术收藏",
+                "operationId": "collectShowCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "话术id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "api/v1/front/script/collectList": {
+            "get": {
+                "summary": "话术收藏列表",
+                "operationId": "collect2ListCategory",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page for 分页",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The limit for 分页尺寸",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
                     }
                 }
             }

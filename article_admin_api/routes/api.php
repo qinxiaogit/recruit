@@ -38,6 +38,37 @@ Route::group([
     });
 });
 
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'v1'
+], function ($router) {
+    Route::group([
+        'prefix' => 'front'
+    ], function () {
+        Route::get('home/init', 'API\\HomeController@init');
+        Route::get('course/category', 'API\\CourseController@category');
+        Route::get('course/init', 'API\\CourseController@init');
+        Route::get('course/list', 'API\\CourseController@index');
+
+        Route::get('script/list', 'API\\ScriptController@index');
+        Route::get('script/collect', 'API\\ScriptController@collect');
+        Route::get('script/collectList', 'API\\ScriptController@collectList');
+        Route::get('script/show', 'API\\ScriptController@show');
+
+        Route::get('material/market', 'API\\MaterialController@market');
+        Route::get('material/circle', 'API\\MaterialController@circle');
+        Route::get('material/collect', 'API\\MaterialController@collect');
+        Route::get('material/collectList', 'API\\MaterialController@collectList');
+
+        Route::get('resource/list', 'API\\ResourceController@index');
+    });
+    Route::group([
+        'prefix' => 'backend'
+    ], function () {
+
+    });
+});
+
 
 
 //

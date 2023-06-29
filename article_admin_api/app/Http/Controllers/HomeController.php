@@ -4,12 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-/**
- * @OA\Get(
- *     path="/",
- *     @OA\Response(response="200", description="Display a listing of projects.")
- * )
- */
 class HomeController extends Controller
 {
     /**
