@@ -152,6 +152,6 @@ class CourseController extends AppBaseController
                 'id' => 2,
             ]
         ];
-        $this->sendResponse($data, "课程获取成功");
+        return $this->sendResponse($data, "课程获取成功");
     }
 }

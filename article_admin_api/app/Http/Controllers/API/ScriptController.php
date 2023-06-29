@@ -84,7 +84,7 @@ class ScriptController extends AppBaseController
 
     /**
      * @OA\Get(
-     *     path="api/v1/front/script/collect",
+     *     path="/api/v1/front/script/collect",
      *     summary="话术收藏",
      *     operationId="collectShowCategory",
      *     @OA\Parameter(
