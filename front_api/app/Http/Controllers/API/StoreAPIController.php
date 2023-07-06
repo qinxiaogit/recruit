@@ -45,9 +45,9 @@ class StoreAPIController extends AppBaseController
      */
     public function store(CreateStoreAPIRequest $request)
     {
-        $logoArr = $request->post('logoList');
-        $busList = $request->post('busList');
-        $pictureArr= $request->post('picture_arr');
+        $logoArr = json_decode($request->post('logoList'),true);
+        $busList = json_decode($request->post('busList'),true);
+        $pictureArr= json_decode($request->post('picture_arr'),true);
         $username= $request->post('username');
 
         $storeData = [
