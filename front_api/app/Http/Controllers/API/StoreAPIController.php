@@ -58,7 +58,11 @@ class StoreAPIController extends AppBaseController
             'album'   => json_encode(array_column($pictureArr,'url')),
             'uid'     => auth()->user()->id,
         ];
-
+        //判断当前用户是否已注册账号
+        $store = Store::where(['uid'=>auth()->user()->id])->first();
+        if(!empty($store)){
+            return $this->sendError('该用户已经注册了店铺不可重复注册');
+        }
         //检查账号是否存在
         $storeAccount = StoreAccount::where(['username'=>$username])->first();
         if(!empty($storeAccount)){
@@ -253,6 +257,8 @@ class StoreAPIController extends AppBaseController
         if(empty($store)){
             return $this->sendResponse(null,'成功');
         }
-        return $this->sendResponse($store->toArray(),'成功');
+        $storeArr = $store->toArray();
+        $storeArr['album'] = json_decode($storeArr['album'],true);
+        return $this->sendResponse($storeArr,'成功');
     }
 }
