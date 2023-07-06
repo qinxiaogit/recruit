@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\API\CreateJobsAPIRequest;
 use App\Http\Requests\API\UpdateJobsAPIRequest;
 use App\Models\AppUser;
+use App\Models\BalanceLog;
 use App\Models\JobReportRecords;
 use App\Models\Jobs;
 use App\Models\Store;
@@ -255,10 +256,22 @@ class JobsAPIController extends AppBaseController
         $jobReportRecord = new JobReportRecords();
         $jobReportRecord->job_id = $jobId;
         $jobReportRecord->uid = $uid;
-        $jobReportRecord->save();
+        if(!$jobReportRecord->save()){
+            return $this->sendError('报名失败');
+        }
 
         DB::table('jobs')->where(['id' => $jobId])->increment('report_count', 1);
-
+        
+        //先写日志
+        $balance = new BalanceLog();
+        $balance->amount = 1;
+        $balance->direction = 2;
+        $balance->reason = '报名消费';
+        $balance->uid = auth()->id();
+        $balance->source = 2;
+        if ($balance->save()) {
+            DB::table('stores')->where(['id' => $jobs->store_id])->decrement('balance', 1);
+        }
 
         $this->sendResponse([], '报名成功');
 
