@@ -261,7 +261,7 @@ class JobsAPIController extends AppBaseController
         }
 
         DB::table('jobs')->where(['id' => $jobId])->increment('report_count', 1);
-        
+
         //先写日志
         $balance = new BalanceLog();
         $balance->amount = 1;

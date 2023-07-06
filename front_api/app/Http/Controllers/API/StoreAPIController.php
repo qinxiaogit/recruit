@@ -242,4 +242,10 @@ class StoreAPIController extends AppBaseController
         return $this->sendResponse([$store->balance], "操作成功");
 
     }
+
+    public function me(){
+        $uid = auth()->user()->id;
+        $store = Store::where(['uid'=>$uid])->first();
+        return $this->sendResponse($store->toArray(),'成功');
+    }
 }
