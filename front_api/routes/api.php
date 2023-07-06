@@ -70,7 +70,7 @@ Route::group([
 
      Route::Group(['prefix'=>'store'],function (){
         Route::post('','API\\StoreAPIController@index');
-        Route::post('create','API\\StoreAPIController@store');
+        Route::post('apply','API\\StoreAPIController@store');
         Route::post('status','API\\StoreAPIController@status');
         Route::post('balance','API\\StoreAPIController@balance');
         Route::get('show','API\\StoreAPIController@show');

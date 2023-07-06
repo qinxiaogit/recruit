@@ -47,12 +47,16 @@ class StoreAPIController extends AppBaseController
     {
         $logoArr = $request->post('logoList');
         $busList = $request->post('busList');
+        $pictureArr= $request->post('picture_arr');
         $username= $request->post('username');
 
         $storeData = [
             'name' => $request->post('store_name'),
             'logo' => $logoArr[0]['url'] ?? '',
             'business_license' => $busList[0]['url'] ?? '',
+            'contact' =>$request->post('contact'),
+            'album'   => json_encode(array_column($pictureArr,'url')),
+            'uid'     => auth()->user()->id,
         ];
 
         //检查账号是否存在
@@ -246,6 +250,9 @@ class StoreAPIController extends AppBaseController
     public function me(){
         $uid = auth()->user()->id;
         $store = Store::where(['uid'=>$uid])->first();
+        if(empty($store)){
+            return $this->sendResponse(null,'成功');
+        }
         return $this->sendResponse($store->toArray(),'成功');
     }
 }
