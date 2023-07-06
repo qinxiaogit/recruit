@@ -43,7 +43,11 @@ class Jobs extends Model
         "store_id",
         "age_start",
         "age_end",
-        "store_id"
+        "store_id",
+        'contact_mobile',
+        'contact_qq',
+        'contact_wx',
+        'contact_qrcode'
     ];
 
     /**
