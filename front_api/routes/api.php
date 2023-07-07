@@ -107,4 +107,8 @@ Route::group([
         Route::post('total','API\\FeedBackAPIController@total');
         Route::post('report','API\\FeedBackAPIController@report');
     });
+
+    Route::Group(['prefix'=>'msg'],function (){
+        Route::get('report','API\\MsgAPIController@index');
+    });
 });
