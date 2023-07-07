@@ -48,9 +48,9 @@ class ConfAPIController extends AppBaseController
     public function protocol()
     {
         $data = [
-            'user_protocol' => 'http://chickenfeet.jubaohuizhong.com/%E7%86%8A%E7%8C%AB%E6%89%BE%E6%B4%BB%E7%94%A8%E6%88%B7%E4%BD%BF%E7%94%A8%E5%8D%8F%E8%AE%AE.pdf',
-            'privacy_protocol' => 'http://chickenfeet.jubaohuizhong.com/%E7%86%8A%E7%8C%AB%E6%89%BE%E6%B4%BB%E7%94%A8%E6%88%B7%E4%BD%BF%E7%94%A8%E5%8D%8F%E8%AE%AE.pdf',
-            'temp_job_protocol' => 'http://chickenfeet.jubaohuizhong.com/%E7%86%8A%E7%8C%AB%E6%89%BE%E6%B4%BB%E7%94%A8%E6%88%B7%E4%BD%BF%E7%94%A8%E5%8D%8F%E8%AE%AE.pdf',
+            'user_protocol' => 'https://chickenfeet.jubaohuizhong.com/%E7%86%8A%E7%8C%AB%E6%89%BE%E6%B4%BB%E7%94%A8%E6%88%B7%E4%BD%BF%E7%94%A8%E5%8D%8F%E8%AE%AE.pdf',
+            'privacy_protocol' => 'https://chickenfeet.jubaohuizhong.com/%E7%86%8A%E7%8C%AB%E6%89%BE%E6%B4%BB%E7%94%A8%E6%88%B7%E4%BD%BF%E7%94%A8%E5%8D%8F%E8%AE%AE.pdf',
+            'temp_job_protocol' => 'https://chickenfeet.jubaohuizhong.com/%E7%86%8A%E7%8C%AB%E6%89%BE%E6%B4%BB%E7%94%A8%E6%88%B7%E4%BD%BF%E7%94%A8%E5%8D%8F%E8%AE%AE.pdf',
         ];
         return $this->sendResponse($data, '获取成功');
     }
