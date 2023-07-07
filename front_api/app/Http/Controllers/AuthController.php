@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobReportRecords;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -41,9 +42,13 @@ class AuthController extends Controller
      */
     public function me()
     {
+        $user = auth()->user();
+        $user['report_count'] = JobReportRecords::where(['uid'=>$user->id])->count();
+        $user['msg_count'] = 0;
+        $user['send_count']  = 0;
         return response()->json([
             'code' => 20000,
-            'data' => auth()->user()
+            'data' => $user
         ]);
     }
 
