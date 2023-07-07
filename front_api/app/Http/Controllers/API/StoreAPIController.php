@@ -259,6 +259,11 @@ class StoreAPIController extends AppBaseController
         }
         $storeArr = $store->toArray();
         $storeArr['album'] = json_decode($storeArr['album'],true);
+        //账号信息
+        $account = StoreAccount::where(['store_id'=>$store->id])->first();
+        if(!empty($account)){
+            $storeArr['account'] = $account->toArray();
+        }
         return $this->sendResponse($storeArr,'成功');
     }
 }
