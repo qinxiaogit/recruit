@@ -74,6 +74,7 @@ class StoreAPIController extends AppBaseController
             $storeAccount = $this->storeAdminRepository->create([
                 'username' => $username,
                 'password' => Hash::make($request->post('password')),
+                'store_id' => $store->id
             ]);
             $storeAccount->save();
         }
@@ -264,6 +265,7 @@ class StoreAPIController extends AppBaseController
         if(!empty($account)){
             $storeArr['account'] = $account->toArray();
         }
+        $storeArr['backend'] = "http://shoper.jubaohuizhong.com";
         return $this->sendResponse($storeArr,'成功');
     }
 }
