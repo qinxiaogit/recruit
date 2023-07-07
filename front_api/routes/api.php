@@ -109,6 +109,6 @@ Route::group([
     });
 
     Route::Group(['prefix'=>'msg'],function (){
-        Route::get('report','API\\MsgAPIController@index');
+        Route::get('report','API\\MsgAPIController@report');
     });
 });
