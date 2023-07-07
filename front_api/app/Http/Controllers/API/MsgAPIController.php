@@ -48,8 +48,8 @@ class MsgAPIController extends AppBaseController
         }
 
         foreach ($arr as $key => $item) {
-            $item['job'] = $jobsMap[$item->job_id] ?? [];
-            $item['store'] = $storeMap[$item['job']->store_id] ?? [];
+            $item['job'] = $jobsMap[$item['job_id']] ?? [];
+            $item['store'] = $storeMap[$item['job']['store_id']] ?? [];
 
             $arr[$key] = $item;
         }
