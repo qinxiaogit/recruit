@@ -253,6 +253,12 @@ class JobsAPIController extends AppBaseController
         if (!empty($jobs)) {
             return $this->sendError('已经报名了，无需重复报名');
         }
+
+        $job = Jobs::where(['id'=>$jobId])->first();
+        if(empty($job)){
+            return $this->sendError('职位不存在');
+        }
+
         $jobReportRecord = new JobReportRecords();
         $jobReportRecord->job_id = $jobId;
         $jobReportRecord->uid = $uid;
@@ -270,7 +276,7 @@ class JobsAPIController extends AppBaseController
         $balance->uid = auth()->id();
         $balance->source = 2;
         if ($balance->save()) {
-            DB::table('stores')->where(['id' => $jobs->store_id])->decrement('balance', 1);
+            DB::table('stores')->where(['id' => $job->store_id])->decrement('balance', 1);
         }
 
         $this->sendResponse([], '报名成功');
@@ -284,8 +290,6 @@ class JobsAPIController extends AppBaseController
     public function reportStatus(Request $request)
     {
         $jobId = $request->post('job_id');
-
-
         $res = DB::table("job_report_records")->where([
             "job_id" => $jobId,
             "uid" => auth()->id()
