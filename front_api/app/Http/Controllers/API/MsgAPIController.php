@@ -29,22 +29,27 @@ class MsgAPIController extends AppBaseController
             ->get('job_id')
             ->toArray();
 
+        $arr = array_map('get_object_vars',$arr);
+
         $jobsMap = [];
         $storeMap = [];
         if (!empty($arr)) {
             $jobIdArr = array_column($arr, 'job_id');
             $jobsArr = DB::table("jobs")->whereIn('id', $jobIdArr)->get(["id", "name", 'store_id'])->toArray();
+            $jobsArr = array_map('get_object_vars',$jobsArr);
+
 
             $jobsMap = array_column($jobsArr, null, 'id');
 
             $storeIdArr = array_column($jobsArr, 'store_id');
             $storeArr = DB::table("stores")->whereIn('id', $storeIdArr)->get(['id', 'name', 'logo'])->toArray();
+            $storeArr = array_map('get_object_vars',$storeArr);
             $storeMap = array_column($storeArr, null, 'id');
         }
 
         foreach ($arr as $key => $item) {
-            $item['job'] = $jobsMap[$item['job_id']] ?? [];
-            $item['store'] = $storeMap[$item['job']['store_id']] ?? [];
+            $item['job'] = $jobsMap[$item->job_id] ?? [];
+            $item['store'] = $storeMap[$item['job']->store_id] ?? [];
 
             $arr[$key] = $item;
         }
