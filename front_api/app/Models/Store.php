@@ -45,5 +45,7 @@ class Store extends Model
 
     ];
 
+    const STORE_STATUS_UP = 1;
+
 
 }

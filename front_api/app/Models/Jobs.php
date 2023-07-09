@@ -64,5 +64,6 @@ class Jobs extends Model
 
     ];
 
+    const JOB_STATUS_UP = 1;
 
 }

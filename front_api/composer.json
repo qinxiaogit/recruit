@@ -25,7 +25,8 @@
         "overtrue/laravel-filesystem-qiniu": "^1.0",
         "overtrue/wechat": "~4.0",
         "tymon/jwt-auth": "^1.0",
-        "overtrue/laravel-wechat": "^5.0"
+        "overtrue/laravel-wechat": "^5.0",
+        "ext-bcmath": "*"
     },
     "require-dev": {
         "facade/ignition": "^1.16.15",

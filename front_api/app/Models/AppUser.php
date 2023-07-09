@@ -16,14 +16,14 @@ class AppUser extends Model
     use SoftDeletes;
 
     public $table = 'app_user';
-    
+
 
     protected $dates = ['deleted_at'];
 
 
 
     public $fillable = [
-        
+
     ];
 
     /**
@@ -41,8 +41,10 @@ class AppUser extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
-    
+    const USER_INVITE_CODE_START = 1000000000;
+
+
 }

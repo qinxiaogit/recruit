@@ -246,6 +246,9 @@ class JobsAPIController extends AppBaseController
     {
         $jobId = $request->post('job_id');
         $uid = auth()->id();
+        if(empty(auth()->user()->birthday) || empty(auth()->user()->sex) || empty(auth()->user()->real_name)){
+            return $this->sendError('未完成实名信息，暂不可报名');
+        }
         $jobs = JobReportRecords::where([
             'job_id' => $jobId,
             'uid' => $uid
@@ -254,11 +257,32 @@ class JobsAPIController extends AppBaseController
             return $this->sendError('已经报名了，无需重复报名');
         }
 
-        $job = Jobs::where(['id'=>$jobId])->first();
+        $job = Jobs::where(['id'=>$jobId,'status'=>Jobs::JOB_STATUS_UP])->first();
         if(empty($job)){
-            return $this->sendError('职位不存在');
+            return $this->sendError('职位不存在或已下架不可报名');
+        }
+        //职位限制性别
+        if($job->sex){
+            if($job->sex !=  auth()->user()->sex){
+                return $this->sendError('职位限制性别：性别不符合无法报名');
+            }
+        }
+        $userAge = bcdiv(time()-strtotime(auth()->user()->birthday),86400,0);
+        //年龄限制
+        if($job->age_start>0 && ($job->age_start > $userAge)){
+            return $this->sendError('职位限制年龄：年龄不符合无法报名');
         }
 
+        if($job->age_end>0 && ($job->age_end < $userAge)){
+            return $this->sendError('职位限制年龄：年龄不符合无法报名');
+        }
+        $store = Store::where(['id'=>$job->store_id,'status'=>Store::STORE_STATUS_UP])->first();
+        if(empty($store)){
+            return $this->sendError('店铺不存在或已下架不可报名');
+        }
+        if($store->balance<=0){
+            return $this->sendError('店铺余额不足不可报名');
+        }
         $jobReportRecord = new JobReportRecords();
         $jobReportRecord->job_id = $jobId;
         $jobReportRecord->uid = $uid;

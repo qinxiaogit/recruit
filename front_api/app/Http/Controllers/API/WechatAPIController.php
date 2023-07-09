@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 
 use App\Http\Controllers\AppBaseController;
+use App\Models\AppUser;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -60,6 +61,10 @@ class WechatAPIController extends AppBaseController
             $user->mobile = $mobile;
             $user->password = Hash::make('123456');
             $user->openid = $openid;
+            if(!$user->save()){
+                return $this->sendError('保存用户失败');
+            }
+            $user->invite_code = base_convert(AppUser::USER_INVITE_CODE_START+$user->id,10,36);
             $user->save();
         }
         $credentials = ['mobile' => $mobile, 'password' => '123456'];

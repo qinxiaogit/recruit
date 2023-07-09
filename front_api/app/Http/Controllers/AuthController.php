@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppUser;
 use App\Models\JobReportRecords;
 use App\User;
 use Illuminate\Http\Request;
@@ -120,6 +121,9 @@ class AuthController extends Controller
         $user = auth()->user();
         $user->nickname = $nickname;
         $user->avatar = $avatar;
+        if(empty($user->invite_code)){
+            $user->invite_code =  base_convert(AppUser::USER_INVITE_CODE_START+$user->id,10,36);
+        }
         $user->save();
         return response()->json($user);
     }
