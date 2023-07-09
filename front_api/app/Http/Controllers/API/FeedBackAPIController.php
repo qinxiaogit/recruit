@@ -70,7 +70,8 @@ class FeedBackAPIController extends AppBaseController
         $feeds = json_decode(json_encode($feeds),true);
         foreach ($feeds as $key => $item) {
             $jobId = $item['job_id'];
-            $item['store_name'] = $storeArrMap[$jobId]['name'] ?? '';
+            $storeId = $jobArrMap[$jobId]['store_id'] ?? 0;
+            $item['store_name'] = $storeArrMap[$storeId]['name'] ?? '';
             $item['name'] = $jobArrMap[$jobId]['name'] ?? '';
             $item['report_count'] = $jobArrMap[$jobId]['report_count'] ?? '';
             $item['unit_desc'] = ($jobArrMap[$jobId]['salary'] ?? '') . "/" . ($jobArrMap[$jobId]['unit'] ?? '');
