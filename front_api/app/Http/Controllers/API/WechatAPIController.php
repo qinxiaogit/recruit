@@ -41,7 +41,7 @@ class WechatAPIController extends AppBaseController
 
     /**
      * @param Request $request
-     * @return array
+     * @return array|mixed
      * @throws \EasyWeChat\Kernel\Exceptions\DecryptException
      */
     public function decode(Request $request)
@@ -72,7 +72,7 @@ class WechatAPIController extends AppBaseController
             return response()->json(['msg' => 'Unauthorized', 'code' => 400, 'sql' => DB::getQueryLog()], 200);
         }
 
-        return $this->respondWithToken($token);
+        return $this->respondWithToken($token ,$user->invite_code);
     }
 
     /**
@@ -80,16 +80,18 @@ class WechatAPIController extends AppBaseController
      *
      * @param string $token
      *
+     * @param string $inviteCode
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token,$inviteCode="")
     {
         return response()->json([
             'code' => 20000,
             'data' => [
                 'access_token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => auth()->factory()->getTTL() * 60
+                'expires_in' => auth()->factory()->getTTL() * 60,
+                'invite_code'=> $inviteCode
             ]
         ]);
     }
