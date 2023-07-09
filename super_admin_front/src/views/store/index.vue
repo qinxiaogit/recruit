@@ -100,11 +100,13 @@
         <template slot-scope="scope">
           <el-button type="primary" @click="updateStore(scope.row)" style="display: none;" icon="el-icon-edit">编辑
           </el-button>
-          <el-popover
+          <el-dialog
             placement="top"
             width="350"
-            v-model="visible">
-            <p>企业入驻审核结果？</p>
+            height="300"
+            :visible.sync="visible"
+            title="企业入驻审核结果"
+          >
             <el-input placeholder="请输入内容" style="margin-bottom: 10px;" v-model="auditReason">
               <template slot="prepend">审核操作原因</template>
             </el-input>
@@ -112,10 +114,11 @@
               <el-button size="mini" type="text" @click="auditStore(scope.row, 0)">审核通过</el-button>
               <el-button type="primary" size="mini" @click="auditStore(scope.row, 1)">审核驳回</el-button>
             </div>
-            <el-button type="primary" slot="reference" v-if="parseInt(scope.row.status) ===0" icon="el-icon-position">
+          </el-dialog>
+            <el-button type="primary" slot="reference" v-if="parseInt(scope.row.status) ===0"  @click="storeAudit(scope.row)" icon="el-icon-position">
               审核
             </el-button>
-          </el-popover>
+
           <el-button type="primary" @click="downStore(scope.row)" v-if="parseInt(scope.row.status) ===1"
                      icon="el-icon-bottom">下架
           </el-button>
@@ -307,7 +310,7 @@
                     spinner: 'el-icon-loading',
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
-                StoreAudit({id: row.id, status: status, reason: this.auditReason}).then(response => {
+                StoreAudit({id: this.balanceId, status: status, reason: this.auditReason}).then(response => {
                     this.visible = false
                     loading.close()
                     this.fetchData()
@@ -318,7 +321,13 @@
             },
             handleCurrentChange(val) {
                 this.fetchData()
+            },
+            storeAudit(row){
+                console.log("aaaa")
+                this.visible = true
+                this.balanceId = row.id
+                console.log(row.id)
             }
-        }
+        },
     }
 </script>
