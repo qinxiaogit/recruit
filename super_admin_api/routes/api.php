@@ -30,7 +30,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'v1'
 
 ], function ($router) {
