@@ -52,6 +52,8 @@ class WechatAPIController extends AppBaseController
 
         $openid = $request->post('openid');
 
+        $inviteCode = $request->post('invite_code');
+
         $wechatData = $this->app->encryptor->decryptData($session, $iv, $encryptedData);
         $mobile = $wechatData['phoneNumber'];
         $user = User::where(['mobile' => $mobile])->first();
@@ -61,10 +63,16 @@ class WechatAPIController extends AppBaseController
             $user->mobile = $mobile;
             $user->password = Hash::make('123456');
             $user->openid = $openid;
-            if(!$user->save()){
+            if (!empty($inviteCode)) {
+                $inviteUser = User::where(['invite_code' => $inviteCode])->first();
+                if (!empty($inviteUser)) {
+                    $user->invite_uid = $inviteUser->id;
+                }
+            }
+            if (!$user->save()) {
                 return $this->sendError('保存用户失败');
             }
-            $user->invite_code = base_convert(AppUser::USER_INVITE_CODE_START+$user->id,10,36);
+            $user->invite_code = base_convert(AppUser::USER_INVITE_CODE_START + $user->id, 10, 36);
             $user->save();
         }
         $credentials = ['mobile' => $mobile, 'password' => '123456'];
@@ -72,7 +80,7 @@ class WechatAPIController extends AppBaseController
             return response()->json(['msg' => 'Unauthorized', 'code' => 400, 'sql' => DB::getQueryLog()], 200);
         }
 
-        return $this->respondWithToken($token ,$user->invite_code);
+        return $this->respondWithToken($token, $user->invite_code);
     }
 
     /**
@@ -83,7 +91,7 @@ class WechatAPIController extends AppBaseController
      * @param string $inviteCode
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token,$inviteCode="")
+    protected function respondWithToken($token, $inviteCode = "")
     {
         return response()->json([
             'code' => 20000,
@@ -91,7 +99,7 @@ class WechatAPIController extends AppBaseController
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => auth()->factory()->getTTL() * 60,
-                'invite_code'=> $inviteCode
+                'invite_code' => $inviteCode
             ]
         ]);
     }
