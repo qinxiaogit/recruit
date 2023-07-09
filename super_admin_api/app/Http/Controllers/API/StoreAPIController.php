@@ -231,7 +231,7 @@ class StoreAPIController extends AppBaseController
         $balance->amount = $amount;
         $balance->direction = $direction;
         $balance->reason = $reason;
-        $balance->uid = auth()->id();
+        $balance->uid = auth()->user()->id;
         $balance->source = 1;
         if($balance->save()){
             if ($direction == 1){
