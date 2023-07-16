@@ -142,6 +142,18 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/city',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: '城市管理',
+        component: () => import('@/views/city/index'),
+        meta: { title: '城市管理', icon: 'el-icon-s-flag' }
+      }
+    ]
+  },
   // {
   //   path: 'external-link',
   //   component: Layout,

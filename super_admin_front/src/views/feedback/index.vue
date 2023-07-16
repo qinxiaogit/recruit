@@ -86,11 +86,12 @@
 
       <el-table-column align="center" prop="created_at" label="操作">
         <template slot-scope="scope">
-          <el-popover
+          <el-dialog
             placement="top"
             width="400"
-            v-model="visible">
-            <p>投诉处理结果？</p>
+            :visible.sync="visible"
+            title="投诉处理结果?"
+          >
             <el-input placeholder="请输入内容" style="margin-bottom: 10px;" v-model="auditReason">
               <template slot="prepend">审核操作原因</template>
             </el-input>
@@ -98,10 +99,10 @@
               <el-button size="mini" type="text" @click="auditStore(scope.row, 1)">通过</el-button>
               <el-button type="primary" size="mini" @click="auditStore(scope.row, 2)">驳回</el-button>
             </div>
-            <el-button type="primary" slot="reference" v-if="parseInt(scope.row.status) ===0" icon="el-icon-position">
-              待处理
-            </el-button>
-          </el-popover>
+          </el-dialog>
+          <el-button type="primary" slot="reference" @click="clickAudit(scope.row)" v-if="parseInt(scope.row.status) ===0" icon="el-icon-position">
+            待处理
+          </el-button>
           <el-button type="primary" @click="downStore(scope.row)" disabled v-if="parseInt(scope.row.status) ===1"
                      icon="el-icon-bottom">已通过
           </el-button>
@@ -201,7 +202,7 @@
                 search_name: "",
                 currentPage: 1,
                 currentPageSize: 10,
-
+                currentSelectId:  0
             }
         },
         created() {
@@ -257,6 +258,8 @@
                 })
             },
             auditStore(row, status) {
+                // console.log(row.id,this.currentSelectId,status)
+                // return
                 const loading = this.$loading({
                     lock: true,
                     text: '数据提交中',
@@ -264,7 +267,7 @@
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
 
-                AuditFeed({id: row.id, status: status, reason: this.auditReason}).then(response => {
+                AuditFeed({id: this.currentSelectId, status: status, reason: this.auditReason}).then(response => {
                     this.visible = false
                     loading.close()
                     this.fetchData()
@@ -275,6 +278,10 @@
             },
             handleCurrentChange(val) {
                 this.fetchData()
+            },
+            clickAudit(row) {
+                this.currentSelectId = row.id
+                this.visible = true
             }
         }
     }
