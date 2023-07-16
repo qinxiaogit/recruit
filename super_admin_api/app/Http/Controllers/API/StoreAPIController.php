@@ -154,7 +154,7 @@ class StoreAPIController extends AppBaseController
     {
         $store = $this->storeRepository->find($request->post("id"));
 
-        $reason = $request->post('reason');
+        $reason = $request->post('reason','');
         $status = $request->post('status');
 
         if (empty($store)) {
