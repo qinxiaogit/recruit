@@ -262,14 +262,20 @@ class StoreAPIController extends AppBaseController
     public function password(Request $request){
         $storeId  = $request->post("store_id");
         $password = $request->post("password");
-        if(empty($password) || strlen($password) <6){
+        if(empty($password) || strlen($password) < 6){
             return $this->sendError('密码格式不正确：至少六个字母或数字');
+        }
+
+        $store = Store::where(['id' =>$storeId])->first();
+        if(empty($store)){
+            return $this->sendError('数据异常');
         }
 
         $storeAccountModel = StoreAccount::where(['store_id'=>$storeId])->first();
         if(empty($storeAccountModel)){
             $storeAccountModel = new StoreAccount();
-            $storeAccountModel->username = sprintf("admin%sedit",$storeId);
+            $contact = $store->contact;
+            $storeAccountModel->username = $contact ? $contact : sprintf("admin%sedit", $storeId);
             $storeAccountModel->store_id = $storeId;
         }
         $storeAccountModel->password = Hash::make($password);
