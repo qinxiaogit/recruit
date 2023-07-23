@@ -36,3 +36,12 @@ export function StoreBalance(data) {
     data:data
   })
 }
+
+//修改账户密码
+export function StorePassword(data) {
+  return request({
+    url: '/v1/store/password',
+    method: 'post',
+    data:data
+  })
+}

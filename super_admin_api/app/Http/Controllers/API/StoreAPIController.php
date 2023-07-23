@@ -6,11 +6,13 @@ use App\Http\Requests\API\CreateStoreAPIRequest;
 use App\Http\Requests\API\UpdateStoreAPIRequest;
 use App\Models\BalanceLog;
 use App\Models\Store;
+use App\Models\StoreAccount;
 use App\Repositories\AuditLogRepository;
 use App\Repositories\StoreRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Response;
 
 /**
@@ -51,8 +53,20 @@ class StoreAPIController extends AppBaseController
             $request->post('skip'),
             $request->post('limit')
         );
+        //查询所有账号
+        $items = $stores->toArray();
+        $storeIds = array_column($items,'id');
+//        var_dump($storeIds);die();
+
+        $storeAccounts = StoreAccount::whereIn('store_id',$storeIds)->get()->toArray();
+        $storeAccountMap = array_column($storeAccounts,null,'store_id');
+//        var_dump($storeAccounts);die();
+        foreach ($items as $key =>$item){
+            $items[$key]['admins'] = $storeAccountMap[$item['id']] ?? [];
+        }
+
         $data = [
-            'items' => $stores->toArray(),
+            'items' => $items,
             'total' => Store::where($where)->count(),
         ];
         return $this->sendResponse($data, 'Stores retrieved successfully');
@@ -243,5 +257,25 @@ class StoreAPIController extends AppBaseController
         }
         return $this->sendResponse([$store->balance], "操作成功");
 
+    }
+    //修改密码
+    public function password(Request $request){
+        $storeId  = $request->post("store_id");
+        $password = $request->post("password");
+        if(empty($password) || strlen($password) <6){
+            return $this->sendError('密码格式不正确：至少六个字母或数字');
+        }
+
+        $storeAccountModel = StoreAccount::where(['store_id'=>$storeId])->first();
+        if(empty($storeAccountModel)){
+            $storeAccountModel = new StoreAccount();
+            $storeAccountModel->username = sprintf("admin%sedit",$storeId);
+            $storeAccountModel->store_id = $storeId;
+        }
+        $storeAccountModel->password = Hash::make($password);
+        if($storeAccountModel->save()){
+            return $this->sendResponse(null, "操作成功");
+        }
+        return $this->sendError('保存失败');
     }
 }

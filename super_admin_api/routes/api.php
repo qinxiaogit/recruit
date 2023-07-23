@@ -40,6 +40,7 @@ Route::group([
         Route::post('audit','API\\StoreAPIController@audit');
         Route::post('status','API\\StoreAPIController@status');
         Route::post('balance','API\\StoreAPIController@balance');
+        Route::post('password','API\\StoreAPIController@password');
     });
 
     Route::Group(['prefix'=>'jobs'],function (){
@@ -64,9 +65,14 @@ Route::group([
     });
 
     Route::Group(['prefix'=>'feed_back'],function (){
-
         Route::get('','API\\FeedBackAPIController@index');
         Route::post('audit','API\\FeedBackAPIController@audit');
+    });
+
+    Route::Group(['prefix'=>'city'],function (){
+        Route::get('','API\\CitysAPIController@index');
+        Route::post('store','API\\CitysAPIController@store');
+        Route::post('delete','API\\CitysAPIController@delete');
     });
 });
 

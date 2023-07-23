@@ -33,22 +33,22 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="ID" width="95">
+      <el-table-column align="center" label="ID" width="80">
         <template slot-scope="scope">
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="店铺名称" width="100">
+      <el-table-column label="店铺名称" width="80">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="商户余额" width="100" align="center">
+      <el-table-column label="商户余额" width="80" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.balance }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="今日报名数" width="100" align="center">
+      <el-table-column label="今日报名数" width="80" align="center">
         <template slot-scope="scope">
           {{ scope.row.today_report_count }}
         </template>
@@ -56,13 +56,13 @@
       <el-table-column label="营业执照" width="80" align="center">
         <template slot-scope="scope">
           <el-image
-            style="width: 100px; height: 100px"
+            style="width: 80px; height: 80px"
             :src="scope.row.business_license"
             fit="cover"></el-image>
         </template>
       </el-table-column>
 
-      <el-table-column label="联系方式" width="110" align="center">
+      <el-table-column label="联系方式" width="90" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.contact }}</span>
         </template>
@@ -71,18 +71,39 @@
       <el-table-column label="logo" width="80" align="center">
         <template slot-scope="scope">
           <el-image
-            style="width: 100px; height: 100px"
+            style="width: 80px; height: 80px"
             :src="scope.row.logo"
             fit="cover"></el-image>
         </template>
       </el-table-column>
 
-      <el-table-column class-name="status-col" label="在线职位数" width="100" align="center">
+      <el-table-column label="管理员账号" width="90" align="center">
+        <template slot-scope="scope">
+          <el-dialog
+            placement="top"
+            width="400px"
+            height="350px"
+            :visible.sync="visibleAccount"
+            title="编辑商户账号密码"
+          >
+            <el-input v-model="newPassword" show-password minlength="6" placeholder="请输入新的密码"></el-input>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="handleClose">取 消</el-button>
+              <el-button type="primary" @click="changePasswordClick(scope.$index, scope.row)">确 定</el-button>
+            </span>
+          </el-dialog>
+          <span>{{ scope.row.admins ? scope.row.admins.username:"" }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column class-name="status-col" label="在线职位数" width="80" align="center">
         <template slot-scope="scope">
           {{ scope.row.online_count }}
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="申请时间" width="160">
+      <el-table-column align="center" prop="created_at" label="申请时间" width="120x'/
+.];l'[po09-[]
+">
         <template slot-scope="scope">
           <span>{{ scope.row.created_at }}</span>
         </template>
@@ -172,6 +193,10 @@
                      icon="el-icon-top">余额变更
           </el-button>
 
+          <el-button style="margin-left: 10px;" type="primary" @click="clickEditAdminPasswordShow(scope.row)"
+                     icon="el-icon-top">修改管理员密码
+          </el-button>
+
         </template>
       </el-table-column>
     </el-table>
@@ -196,7 +221,7 @@
 </style>
 
 <script>
-    import {StoreList, StoreAudit, StoreStatus, StoreBalance} from '@/api/store/list'
+    import {StoreList, StoreAudit, StoreStatus, StoreBalance ,StorePassword} from '@/api/store/list'
 
     export default {
         filters: {
@@ -213,6 +238,8 @@
             return {
                 list: null,
                 listLoading: true,
+                visibleAccount: false,
+                newPassword:"",
                 visible: false,
                 auditReason: "",
                 total: 0,
@@ -249,9 +276,23 @@
                 this.balanceId = row.id
 
             },
+            clickEditAdminPasswordShow(row){
+                this.balanceId = row.id
+                this.visibleAccount = true;
+            },
             handleClose() {
                 this.visibleBalance = false;
-
+                this.visibleAccount = false;
+            },
+            changePasswordClick(id, row) {
+                StorePassword({
+                    store_id: this.balanceId,
+                    password: this.newPassword,
+                }).then(response => {
+                    this.visibleBalance = false;
+                    this.visibleAccount = false;
+                    this.fetchData();
+                })
             },
             changeBalanceClick(id, row) {
                 StoreBalance({
