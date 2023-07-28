@@ -11,7 +11,7 @@
  Target Server Version : 50727
  File Encoding         : 65001
 
- Date: 11/06/2023 06:14:28
+ Date: 28/07/2023 22:52:12
 */
 
 SET NAMES utf8mb4;
@@ -35,16 +35,10 @@ CREATE TABLE `app_user` (
   `deleted_at` timestamp NULL DEFAULT NULL,
   `birthday` char(16) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '用户生日',
   `active_time` bigint(11) DEFAULT '0' COMMENT '最近活跃时间',
+  `openid` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '小程序openid',
+  `password` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '用户密码:默认123456 兼容框架',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------
--- Records of app_user
--- ----------------------------
-BEGIN;
-INSERT INTO `app_user` VALUES (1, '2023-06-06 09:59:50', '2023-06-06 09:59:54', 'https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg', '测试', '嘿嘿', '1', '18227755586', '000001', 0, NULL, '20221102', 0);
-INSERT INTO `app_user` VALUES (2, '2023-06-06 10:00:50', NULL, 'https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg', '测试2', '呵呵', '2', '18227755588', '000002', 1, NULL, '20221211', 0);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for audit_log
@@ -63,17 +57,6 @@ CREATE TABLE `audit_log` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
--- Records of audit_log
--- ----------------------------
-BEGIN;
-INSERT INTO `audit_log` VALUES (1, 'sdaasda', 1, 1, '2023-06-02 03:17:45', '2023-06-02 03:17:45', 0, 'store');
-INSERT INTO `audit_log` VALUES (2, '2222', 1, 1, '2023-06-02 03:20:57', '2023-06-02 03:20:57', 0, 'store');
-INSERT INTO `audit_log` VALUES (3, '6666', 1, 1, '2023-06-02 03:23:40', '2023-06-02 03:23:40', 0, 'store');
-INSERT INTO `audit_log` VALUES (4, '系统异常', 1, 1, '2023-06-02 03:26:01', '2023-06-02 03:26:01', 0, 'store');
-INSERT INTO `audit_log` VALUES (6, '6666', 1, 1, '2023-06-07 07:36:37', '2023-06-07 07:36:37', 0, 'store');
-COMMIT;
-
--- ----------------------------
 -- Table structure for balance_log
 -- ----------------------------
 DROP TABLE IF EXISTS `balance_log`;
@@ -90,20 +73,18 @@ CREATE TABLE `balance_log` (
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
--- Records of balance_log
+-- Table structure for citys
 -- ----------------------------
-BEGIN;
-INSERT INTO `balance_log` VALUES (6, '商户充值', 1, 1, 1000, 1, '2023-06-07 09:31:01', '2023-06-07 09:31:01');
-INSERT INTO `balance_log` VALUES (7, '商户充值', 1, 1, 1000, 1, '2023-06-07 09:31:26', '2023-06-07 09:31:26');
-INSERT INTO `balance_log` VALUES (8, '商户充值', 1, 1, 1000, 1, '2023-06-07 09:31:36', '2023-06-07 09:31:36');
-INSERT INTO `balance_log` VALUES (9, '商户充值', 1, 1, 600, 1, '2023-06-07 09:32:01', '2023-06-07 09:32:01');
-INSERT INTO `balance_log` VALUES (10, '扣除所有数据', 2, 1, 11, 1, '2023-06-07 09:34:25', '2023-06-07 09:34:25');
-INSERT INTO `balance_log` VALUES (11, '扣除所有数据', 2, 1, 11, 1, '2023-06-07 09:34:46', '2023-06-07 09:34:46');
-INSERT INTO `balance_log` VALUES (12, '1', 1, 1, 12, 1, '2023-06-07 09:36:28', '2023-06-07 09:36:28');
-INSERT INTO `balance_log` VALUES (13, '1', 1, 1, 12, 1, '2023-06-07 09:36:50', '2023-06-07 09:36:50');
-INSERT INTO `balance_log` VALUES (14, '2222', 1, 1, 1000, 1, '2023-06-07 09:38:02', '2023-06-07 09:38:02');
-INSERT INTO `balance_log` VALUES (15, '2222', 1, 1, 1222, 1, '2023-06-07 09:54:30', '2023-06-07 09:54:30');
-COMMIT;
+DROP TABLE IF EXISTS `citys`;
+CREATE TABLE `citys` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '城市名称',
+  `index` char(8) NOT NULL DEFAULT '' COMMENT '城市首字母',
+  `key` char(8) NOT NULL DEFAULT '' COMMENT '城市唯一码',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for failed_jobs
@@ -118,12 +99,6 @@ CREATE TABLE `failed_jobs` (
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------
--- Records of failed_jobs
--- ----------------------------
-BEGIN;
-COMMIT;
 
 -- ----------------------------
 -- Table structure for feed_back
@@ -141,15 +116,9 @@ CREATE TABLE `feed_back` (
   `img_json` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '图片证明',
   `status` tinyint(4) NOT NULL COMMENT '处理状态:0.待处理，1.已处理',
   `reason` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '处理结果',
+  `job_id` int(11) NOT NULL DEFAULT '0' COMMENT '职位id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------
--- Records of feed_back
--- ----------------------------
-BEGIN;
-INSERT INTO `feed_back` VALUES (1, '2023-06-06 17:32:11', '2023-06-07 07:36:37', NULL, 1, 1, '346243025', '你到家啊时间啊技能等级拿手机拿手机奶萨缴纳手打加拿大缴纳', '[\"https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg\",\"https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg\"]', 2, ' ');
-COMMIT;
 
 -- ----------------------------
 -- Table structure for job_cate
@@ -165,26 +134,7 @@ CREATE TABLE `job_cate` (
   `deleted_at` timestamp NULL DEFAULT NULL,
   `parent_id` int(11) DEFAULT '0' COMMENT '负节点id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------
--- Records of job_cate
--- ----------------------------
-BEGIN;
-INSERT INTO `job_cate` VALUES (1, '2023-06-05 18:14:08', NULL, '简单易做', 1, 1, NULL, 0);
-INSERT INTO `job_cate` VALUES (2, '2023-06-05 14:21:22', '2023-06-05 14:21:22', '技能才艺', 2, 1, NULL, 0);
-INSERT INTO `job_cate` VALUES (3, '2023-06-05 14:21:46', '2023-06-05 14:21:46', '家教辅导', 3, 1, NULL, 0);
-INSERT INTO `job_cate` VALUES (4, '2023-06-05 14:21:57', '2023-06-05 14:21:57', '聊天主播', 4, 1, NULL, 0);
-INSERT INTO `job_cate` VALUES (5, '2023-06-05 14:22:38', '2023-06-05 14:22:38', '问卷调查', 1, 2, NULL, 1);
-INSERT INTO `job_cate` VALUES (6, '2023-06-05 14:22:48', '2023-06-05 15:25:40', '线上推广', 1, 2, '2023-06-05 15:25:40', 1);
-INSERT INTO `job_cate` VALUES (7, '2023-06-05 14:23:02', '2023-06-05 14:23:02', '主播', 1, 2, NULL, 2);
-INSERT INTO `job_cate` VALUES (8, '2023-06-05 14:23:10', '2023-06-05 15:25:40', '美工设计', 1, 2, '2023-06-05 15:25:40', 2);
-INSERT INTO `job_cate` VALUES (9, '2023-06-05 14:23:21', '2023-06-05 14:23:21', '答题批改', 1, 2, NULL, 3);
-INSERT INTO `job_cate` VALUES (10, '2023-06-05 14:23:28', '2023-06-05 15:25:40', '线上家教', 1, 2, '2023-06-05 15:25:40', 3);
-INSERT INTO `job_cate` VALUES (11, '2023-06-05 14:23:43', '2023-06-05 14:23:43', '聊天员', 1, 2, NULL, 4);
-INSERT INTO `job_cate` VALUES (12, '2023-06-05 14:23:49', '2023-06-05 14:23:49', '主播', 1, 2, NULL, 4);
-INSERT INTO `job_cate` VALUES (13, '2023-06-05 14:23:56', '2023-06-05 15:25:40', '其他', 1, 2, '2023-06-05 15:25:40', 4);
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Table structure for job_report_records
@@ -198,16 +148,9 @@ CREATE TABLE `job_report_records` (
   `uid` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0.待录用，1.已录用，2.不录用',
   `reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '操作原因',
+  `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='报名记录';
-
--- ----------------------------
--- Records of job_report_records
--- ----------------------------
-BEGIN;
-INSERT INTO `job_report_records` VALUES (1, '2023-06-09 18:37:22', NULL, 1, 1, 1, '符合录用标准');
-INSERT INTO `job_report_records` VALUES (2, '2023-06-09 18:37:34', NULL, 2, 1, 2, '不符原则');
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='报名记录';
 
 -- ----------------------------
 -- Table structure for jobs
@@ -240,16 +183,13 @@ CREATE TABLE `jobs` (
   `deleted_at` timestamp NULL DEFAULT NULL,
   `age_start` tinyint(1) DEFAULT '0' COMMENT '年龄限制开始',
   `age_end` tinyint(1) NOT NULL DEFAULT '0' COMMENT '年龄限制结束',
+  `contact_qrcode` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '联系方式二维码地址',
+  `contact_qq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '联系方式-qq',
+  `contact_wx` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '联系方式-wx',
+  `contact_mobile` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '联系方式二维码',
+  `city` varchar(8) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '职位所在城市code',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------
--- Records of jobs
--- ----------------------------
-BEGIN;
-INSERT INTO `jobs` VALUES (1, '2023-06-05 14:35:07', '2023-06-05 09:42:41', '第一个职位', 50, 1, 5, 1, 1, 1, 1, 10, 20211103, 20211113, '时代楷模打啊看没看马上', '阿达大萨达', 10.00, '小时', '刀马旦卡密代码块开慢点', 100, 122, 1, 1, NULL, 0, 0);
-INSERT INTO `jobs` VALUES (2, '2023-06-09 10:09:02', '2023-06-09 10:09:02', 'asdadasds', 99999, 2, 7, 2, 1, 2, 0, 1000, 20230605, 20230705, 'damdkakdkakmdkmakmdskmsdkmssads', 'dsmksdakmsdkmskmdsakmsadkmsd', 1.00, '天', 'dmkdskmdkasdksadkmdsakmdsa', 0, 0, 1, 0, NULL, 10, 12);
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Table structure for migrations
@@ -263,22 +203,6 @@ CREATE TABLE `migrations` (
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
--- Records of migrations
--- ----------------------------
-BEGIN;
-INSERT INTO `migrations` VALUES (1, '2014_10_12_000000_create_users_table', 1);
-INSERT INTO `migrations` VALUES (2, '2014_10_12_100000_create_password_resets_table', 1);
-INSERT INTO `migrations` VALUES (3, '2019_08_19_000000_create_failed_jobs_table', 1);
-INSERT INTO `migrations` VALUES (4, '2023_05_31_104152_create_super_admins_table', 1);
-INSERT INTO `migrations` VALUES (7, '2023_05_31_175727_create_stores_table', 2);
-INSERT INTO `migrations` VALUES (8, '2023_06_02_022821_audit_log', 3);
-INSERT INTO `migrations` VALUES (10, '2023_06_02_085319_create_jobs_table', 4);
-INSERT INTO `migrations` VALUES (11, '2023_06_02_093943_create_app_user_table', 5);
-INSERT INTO `migrations` VALUES (12, '2023_06_02_094001_create_job_cate_table', 5);
-INSERT INTO `migrations` VALUES (13, '2023_06_02_094038_create_feed_back_table', 5);
-COMMIT;
-
--- ----------------------------
 -- Table structure for password_resets
 -- ----------------------------
 DROP TABLE IF EXISTS `password_resets`;
@@ -288,12 +212,6 @@ CREATE TABLE `password_resets` (
   `created_at` timestamp NULL DEFAULT NULL,
   KEY `password_resets_email_index` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------
--- Records of password_resets
--- ----------------------------
-BEGIN;
-COMMIT;
 
 -- ----------------------------
 -- Table structure for store_account
@@ -310,14 +228,7 @@ CREATE TABLE `store_account` (
   `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '头像',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '别名',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
-
--- ----------------------------
--- Records of store_account
--- ----------------------------
-BEGIN;
-INSERT INTO `store_account` VALUES (1, 'admin', '$2y$10$pzkxg6MCDtlluoEF5yqrm..7Vv4mE5mN811.0hFYp6UVOmd3Q/2IK', 1, '2023-05-31 19:09:38', '2023-05-31 19:09:38', NULL, 'https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg', '超级管理员');
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for stores
@@ -336,16 +247,10 @@ CREATE TABLE `stores` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
+  `uid` int(11) DEFAULT '0' COMMENT '店铺所属小程序用户id',
+  `album` text CHARACTER SET utf8mb4 COMMENT '企业相册',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------
--- Records of stores
--- ----------------------------
-BEGIN;
-INSERT INTO `stores` VALUES (1, '第一个店铺', 1232, 12, 13, 2, 'https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg', 'https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg', '18227755589', '2023-06-01 11:45:34', '2023-06-07 09:45:17', NULL);
-INSERT INTO `stores` VALUES (2, '第二个店铺', 5601, 111, 122, 1, 'https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg', 'https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg', '19288288282', '2023-06-02 16:35:06', '2023-06-07 09:45:20', NULL);
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Table structure for super_admins
@@ -364,13 +269,6 @@ CREATE TABLE `super_admins` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
--- Records of super_admins
--- ----------------------------
-BEGIN;
-INSERT INTO `super_admins` VALUES (1, 'admin', '$2y$10$pzkxg6MCDtlluoEF5yqrm..7Vv4mE5mN811.0hFYp6UVOmd3Q/2IK', '2023-05-31 19:09:38', '2023-05-31 19:09:38', NULL, 'https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg', '超级管理员');
-COMMIT;
-
--- ----------------------------
 -- Table structure for users
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
@@ -387,10 +285,6 @@ CREATE TABLE `users` (
   UNIQUE KEY `users_email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ----------------------------
--- Records of users
--- ----------------------------
-BEGIN;
-COMMIT;
+INSERT INTO `recruit`.`super_admins`(`id`, `username`, `password`, `created_at`, `updated_at`, `deleted_at`, `avatar`, `name`) VALUES (1, 'admin', '$2y$10$pzkxg6MCDtlluoEF5yqrm..7Vv4mE5mN811.0hFYp6UVOmd3Q/2IK', '2023-05-31 19:09:38', '2023-05-31 19:09:38', NULL, 'https://img2.woyaogexing.com/2023/05/31/c94dfa3d65b642ceb393235f7ceea65c.jpg', '超级管理员');
 
 SET FOREIGN_KEY_CHECKS = 1;
