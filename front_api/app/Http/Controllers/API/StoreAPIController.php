@@ -68,7 +68,13 @@ class StoreAPIController extends AppBaseController
         if(!empty($storeAccount)){
             return $this->sendError('该账号已存在，请切换账号重试');
         }
-        $store = $this->storeRepository->create($storeData);
+        $store = new Store();
+        $store->name = $storeData['name'];
+        $store->logo = $storeData['logo'];
+        $store->business_license = $storeData['business_license'];
+        $store->contact = $storeData['contact'];
+        $store->album = $storeData['album'];
+        $store->uid = $storeData['uid'];
         //保存成功-生成店铺账号信息
         if ($store->save()) {
             $storeAccount = $this->storeAdminRepository->create([
