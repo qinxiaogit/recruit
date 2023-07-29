@@ -11,6 +11,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @version May 31, 2023, 5:57 pm UTC
  *
  * @property string $name
+ * @property string $balance
+ * @property string $logo
+ * @property string $uid
+ * @property string $album
+ * @property string $contact
+ * @property string $business_license
+ * @property string $created_at
  */
 class Store extends Model
 {
@@ -24,7 +31,7 @@ class Store extends Model
 
 
     public $fillable = [
-        'name','uid','album','contact','business_license','logo'
+        'name','uid','album','contact','business_license','logo',
     ];
 
     /**

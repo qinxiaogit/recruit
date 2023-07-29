@@ -20,7 +20,8 @@ class StoreAccount extends  Authenticatable implements JWTSubject
 
     public $fillable = [
         'username',
-        'password'
+        'password',
+        'store_id'
     ];
 
     /**
