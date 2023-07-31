@@ -138,10 +138,11 @@ class AuthController extends Controller
         $sex = $request->post('sex');
         $birthday = $request->post('birthday');
 
-        $age = $request->post('birthday');
+        $age = $request->post('age');
         if (!empty($age)) {
             $birthday = ( (intval(date("Y")) - $age)."-01-01");
         }
+
 
         $user = auth()->user();
         $user->real_name = $realname;

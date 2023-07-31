@@ -267,7 +267,7 @@ class JobsAPIController extends AppBaseController
                 return $this->sendError('职位限制性别：性别不符合无法报名');
             }
         }
-        $userAge = bcdiv(time()-strtotime(auth()->user()->birthday),86400,0);
+        $userAge = bcsub(date("Y"),date("Y",strtotime(auth()->user()->birthday)));
         //年龄限制
         if($job->age_start>0 && ($job->age_start > $userAge)){
             return $this->sendError('职位限制年龄：年龄不符合无法报名');
