@@ -137,6 +137,12 @@ class AuthController extends Controller
         $realname = $request->post('real_name');
         $sex = $request->post('sex');
         $birthday = $request->post('birthday');
+
+        $age = $request->post('birthday');
+        if (!empty($age)) {
+            $birthday = strtotime( (intval(date("Y")) - $age)."-01-01");
+        }
+
         $user = auth()->user();
         $user->real_name = $realname;
         $user->sex = $sex;
