@@ -140,7 +140,7 @@ class AuthController extends Controller
 
         $age = $request->post('birthday');
         if (!empty($age)) {
-            $birthday = strtotime( (intval(date("Y")) - $age)."-01-01");
+            $birthday = ( (intval(date("Y")) - $age)."-01-01");
         }
 
         $user = auth()->user();
