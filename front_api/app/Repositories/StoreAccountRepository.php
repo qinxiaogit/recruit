@@ -13,7 +13,8 @@ class StoreAccountRepository extends BaseRepository
      */
     protected $fieldSearchable = [
         'username',
-        'password'
+        'password',
+        'store_id'
     ];
     /**
      * Get searchable fields array

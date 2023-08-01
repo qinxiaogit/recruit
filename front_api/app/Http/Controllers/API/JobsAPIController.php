@@ -83,6 +83,8 @@ class JobsAPIController extends AppBaseController
                     'name' => $catArr[$list['two_cate_id']]
                 ];
             }
+            $nameLength =  mb_strlen($list['name']);
+            $list["name"] = $nameLength>12? (mb_substr($list['name'],0,12)."..."):$list['name'];
             $list['unit_desc'] = $list['salary'] . "/" . $list['unit'];
             $list['tags'] = $tags;
             $lists[$key] = $list;
