@@ -136,9 +136,10 @@ class JobsAPIController extends AppBaseController
     {
         $input = $request->all();
 
-        $input['work_start_time'] = date("Ymd",strtotime($input['work_start_time']));
-        $input['work_end_time'] = date("Ymd",strtotime($input['work_end_time']));
-
+        if(isset($input['work_start_time']) &&   isset($input['work_end_time'])){
+            $input['work_start_time'] = date("Ymd",strtotime($input['work_start_time']));
+            $input['work_end_time'] = date("Ymd",strtotime($input['work_end_time']));
+        }
         /** @var Jobs $jobs */
         $jobs = $this->jobsRepository->find($id);
 
@@ -146,7 +147,7 @@ class JobsAPIController extends AppBaseController
             return $this->sendError('Jobs not found');
         }
         //修改了职位名称或者工作内容
-        if($jobs->status == 1 && ($jobs->name  != $input['name']  || $jobs->work_content!==$input['work_content'])){
+        if(isset($input['name'])&& ( $jobs->status == 1 && ($jobs->name  != $input['name']  || $jobs->work_content!==$input['work_content']))){
             $auditLog = new AuditRecord();
             $auditLog->origin_id = $id;
             $auditLog->extra = json_encode(['name'=>$input['name'],'work_content'=>$input['work_content']]);
