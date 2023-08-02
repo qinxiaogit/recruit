@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\API\CreateJobsAPIRequest;
 use App\Http\Requests\API\UpdateJobsAPIRequest;
 use App\Models\AppUser;
+use App\Models\AuditLog;
+use App\Models\AuditRecord;
 use App\Models\JobReportRecords;
 use App\Models\Jobs;
 use App\Models\Store;
@@ -50,14 +52,24 @@ class JobsAPIController extends AppBaseController
 
         $storeIdArr = array_column($items, 'store_id');
 
+        $jobsIds=  array_column($items, 'id');
+
         $stores = Store::whereIn('id', $storeIdArr)->get()->toArray();
         $storeMap = array_column($stores, null, 'id');
+
+        $auditRecord = AuditRecord::whereIn('origin_id',$jobsIds)->where('source',1)->get()->toArray();
+        $auditRecordMap = array_column($auditRecord,null,'origin_id');
 
         foreach ($items as $key => $item) {
             $item['store'] = [
                 'name' => $storeMap[$item['store_id']]['name'] ?? '',
                 'logo' => $storeMap[$item['store_id']]['logo'] ?? '',
             ];
+            if(isset($auditRecordMap[$item['id']])){
+                $item['audit_log'] =  [
+                    'extra'=> json_decode($auditRecordMap[$item['id']]['extra'],true)
+                ];
+            }
             $item['is_top'] = $item['is_top'] ? true : false;
             $items[$key] = $item;
         }
@@ -105,8 +117,10 @@ class JobsAPIController extends AppBaseController
         if (empty($jobs)) {
             return $this->sendError('Jobs not found');
         }
-
-        return $this->sendResponse($jobs->toArray(), 'Jobs retrieved successfully');
+        $jobData = $jobs->toArray();
+        $jobData['work_start_time'] = date("Y-m-d",strtotime($jobData['work_start_time']));
+        $jobData['work_end_time'] = date("Y-m-d",strtotime($jobData['work_end_time']));
+        return $this->sendResponse($jobData, 'Jobs retrieved successfully');
     }
 
     /**
@@ -122,11 +136,24 @@ class JobsAPIController extends AppBaseController
     {
         $input = $request->all();
 
+        $input['work_start_time'] = date("Ymd",strtotime($input['work_start_time']));
+        $input['work_end_time'] = date("Ymd",strtotime($input['work_end_time']));
+
         /** @var Jobs $jobs */
         $jobs = $this->jobsRepository->find($id);
 
         if (empty($jobs)) {
             return $this->sendError('Jobs not found');
+        }
+        //修改了职位名称或者工作内容
+        if($jobs->status == 1 && ($jobs->name  != $input['name']  || $jobs->work_content!==$input['work_content'])){
+            $auditLog = new AuditRecord();
+            $auditLog->origin_id = $id;
+            $auditLog->extra = json_encode(['name'=>$input['name'],'work_content'=>$input['work_content']]);
+            $auditLog->source = 1;
+            $auditLog->save();
+            unset($input['name']);
+            unset($input['work_content']);
         }
 
         $jobs = $this->jobsRepository->update($input, $id);

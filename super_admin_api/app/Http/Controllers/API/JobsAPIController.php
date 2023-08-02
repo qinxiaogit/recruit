@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\API\CreateJobsAPIRequest;
 use App\Http\Requests\API\UpdateJobsAPIRequest;
+use App\Models\AuditRecord;
 use App\Models\Jobs;
 use App\Models\Store;
 use App\Repositories\AuditLogRepository;
@@ -51,11 +52,20 @@ class JobsAPIController extends AppBaseController
         $stores = Store::whereIn('id', $storeIdArr)->get()->toArray();
         $storeMap = array_column($stores, null, 'id');
 
+        $jobsIds=  array_column($items, 'id');
+        $auditRecord = AuditRecord::whereIn('origin_id',$jobsIds)->where('source',1)->get()->toArray();
+        $auditRecordMap = array_column($auditRecord,null,'origin_id');
+
         foreach ($items as $key => $item) {
             $item['store'] = [
                 'name' => $storeMap[$item['store_id']]['name'] ?? '',
                 'logo' => $storeMap[$item['store_id']]['logo'] ?? '',
             ];
+            if(isset($auditRecordMap[$item['id']])){
+                $item['audit_log'] =  [
+                    'extra'=> json_decode($auditRecordMap[$item['id']]['extra'],true)
+                ];
+            }
             $item['is_top'] = $item['is_top'] ? true : false;
             $items[$key] = $item;
         }
@@ -123,8 +133,19 @@ class JobsAPIController extends AppBaseController
         if (empty($jobs)) {
             return $this->sendError('Jobs not found');
         }
+        $audit = AuditRecord::where('origin_id',$id)->orderBy('id','desc')->first();
+
+        if ($audit) {
+            $extra = json_decode($audit->extra, true);
+            if (isset($input['status']) && $input['status'] == 1) {
+                $input['name'] = $extra['name'] ?? "";
+                $input['work_content'] = $extra['work_content'] ?? '';
+            }
+            AuditRecord::where('origin_id',$id)->delete();
+        }
 
         $jobs = $this->jobsRepository->update($input, $id);
+
 
         return $this->sendResponse($jobs->toArray(), 'Jobs updated successfully');
     }
