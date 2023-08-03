@@ -155,7 +155,7 @@ class AuthController extends Controller
         $user->nickname = $nickname;
         $user->sex = $sex;
         $user->avatar = $avatar;
-        $user->birthday = date("Ymd", strtotime($birthday));
+        $user->birthday = date("Y-m-d", strtotime($birthday));
         $user->save();
         return response()->json($user);
     }
