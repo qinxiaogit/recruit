@@ -47,7 +47,7 @@ class AuthController extends Controller
         $user['report_count'] = JobReportRecords::where(['uid'=>$user->id])->count();
         $user['msg_count'] = 0;
         $user['send_count']  = 0;
-        $user['age'] = bcdiv(time()-strtotime($user['age'] ),24*84600,0);
+        $user['age'] = bcdiv(time()-strtotime($user['birthday'] ),24*84600,0);
         return response()->json([
             'code' => 20000,
             'data' => $user
