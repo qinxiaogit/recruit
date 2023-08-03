@@ -145,7 +145,7 @@ class AuthController extends Controller
         $age = $request->post('age');
         $nickname = $request->post('nickname');
         if (!empty($age)) {
-            $birthday = ( (intval(date("Y")) - $age)."-01-01");
+            $birthday = date("Y-m-d",time()-$age*24*86400);
         }
 
 
