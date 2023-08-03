@@ -47,6 +47,7 @@ class AuthController extends Controller
         $user['report_count'] = JobReportRecords::where(['uid'=>$user->id])->count();
         $user['msg_count'] = 0;
         $user['send_count']  = 0;
+        $user['age'] = intval(time()-strtotime($user['age'] ));
         return response()->json([
             'code' => 20000,
             'data' => $user
@@ -137,8 +138,10 @@ class AuthController extends Controller
         $realname = $request->post('real_name');
         $sex = $request->post('sex');
         $birthday = $request->post('birthday');
+        $avatar = $request->post('avatar');
 
         $age = $request->post('age');
+        $nickname = $request->post('nickname');
         if (!empty($age)) {
             $birthday = ( (intval(date("Y")) - $age)."-01-01");
         }
@@ -146,7 +149,10 @@ class AuthController extends Controller
 
         $user = auth()->user();
         $user->real_name = $realname;
+        $user->nickname = $nickname;
+        $user->nickname = $nickname;
         $user->sex = $sex;
+        $user->avatar = $avatar;
         $user->birthday = date("Ymd", strtotime($birthday));
         $user->save();
         return response()->json($user);
