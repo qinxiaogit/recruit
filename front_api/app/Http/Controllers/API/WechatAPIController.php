@@ -50,7 +50,7 @@ class WechatAPIController extends AppBaseController
         $iv = $request->post("iv");
         $encryptedData = $request->post("encryptedData");
 
-        $encryptedData =  str_replace($encryptedData,'+',' ');
+//        $encryptedData =  str_replace($encryptedData,'+',' ');
 
         $openid = $request->post('openid');
 
