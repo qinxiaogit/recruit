@@ -48,6 +48,8 @@ class AuthController extends Controller
         $user['msg_count'] = 0;
         $user['send_count']  = 0;
         $user['age'] = bcdiv(time()-strtotime($user['birthday'] ),24*84600,0);
+        $user['current_time'] = time();
+        $user['birthday_time'] = strtotime($user['birthday'] );
         return response()->json([
             'code' => 20000,
             'data' => $user
