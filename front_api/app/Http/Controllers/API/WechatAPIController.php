@@ -50,6 +50,8 @@ class WechatAPIController extends AppBaseController
         $iv = $request->post("iv");
         $encryptedData = $request->post("encryptedData");
 
+        $encryptedData =  str_replace($encryptedData,'+',' ');
+
         $openid = $request->post('openid');
 
         $inviteCode = $request->post('invite_code');
