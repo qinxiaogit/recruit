@@ -6,11 +6,13 @@ use App\Http\Requests\API\CreateStoreAPIRequest;
 use App\Http\Requests\API\UpdateStoreAPIRequest;
 use App\Models\BalanceLog;
 use App\Models\Store;
+use App\Models\StoreAccount;
 use App\Repositories\AuditLogRepository;
 use App\Repositories\StoreRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Response;
 
 /**
@@ -116,6 +118,20 @@ class StoreAPIController extends AppBaseController
         }
 
         $store = $this->storeRepository->update($input, $id);
+        //修改密码
+        if(!empty($input['password'])){
+            $storeAccountModel = StoreAccount::where(['store_id'=>$store->id])->first();
+            if(empty($storeAccountModel)){
+                $storeAccountModel = new StoreAccount();
+                $contact = $store->contact;
+                $storeAccountModel->username = $contact ? $contact : sprintf("admin%sedit", $store->id);
+                $storeAccountModel->store_id = $store->id;
+            }
+            $storeAccountModel->password = Hash::make($input['password']);
+            if($storeAccountModel->save()){
+                return $this->sendResponse(null, "操作成功");
+            }
+        }
 
         return $this->sendResponse($store->toArray(), 'Store updated successfully');
     }
