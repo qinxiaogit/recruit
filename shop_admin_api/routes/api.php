@@ -45,6 +45,7 @@ Route::group([
         Route::post('status','API\\StoreAPIController@status');
         Route::post('balance','API\\StoreAPIController@balance');
         Route::get('show','API\\StoreAPIController@show');
+        Route::put('{id}','API\\StoreAPIController@update');
     });
 
     Route::Group(['prefix'=>'jobs'],function (){
