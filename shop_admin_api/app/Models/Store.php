@@ -17,14 +17,17 @@ class Store extends Model
     use SoftDeletes;
 
     public $table = 'stores';
-    
+
 
     protected $dates = ['deleted_at'];
 
 
 
     public $fillable = [
-        'name'
+        'name',
+        'business_license',
+        'contact',
+        'logo'
     ];
 
     /**
@@ -42,8 +45,8 @@ class Store extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
-    
+
 }
