@@ -207,17 +207,21 @@ class JobsAPIController extends AppBaseController
         }
         $skip = $request->post('skip');
         $limit = $request->post('limit');
-
-        $items = $query->offset($skip)->limit($limit)->get()->toArray();
         $total = $query->count();
+        $items = $query->offset($skip)->limit($limit)->get()->toArray();
+
 
 
         $items = json_decode(json_encode($items), true);
         $storeIdArr = array_column($items, 'uid');
 
+        $jobIdArr =  array_column($items, 'job_id');
+
         $stores = AppUser::whereIn('id', $storeIdArr)->get()->toArray();
+        $jobs   = Jobs::whereIn('id', $jobIdArr)->get()->toArray();
 
         $storeMap = array_column($stores, null, 'id');
+        $jobMap = array_column($jobs, null, 'id');
         foreach ($items as $key => $item) {
             if (isset($storeMap[$item['uid']])) {
                 $item['report_user'] = [
@@ -226,6 +230,7 @@ class JobsAPIController extends AppBaseController
                     'mobile' => $storeMap[$item['uid']]['mobile'] ?? '',
                     'sex' => $storeMap[$item['uid']]['sex'] ?? '',
                 ];
+                $item['report_job'] = $jobMap[$item['job_id']] ?? null;
             }else{
                 $item['report_user'] = [];
             }
