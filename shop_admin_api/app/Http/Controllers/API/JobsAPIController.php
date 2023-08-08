@@ -208,7 +208,7 @@ class JobsAPIController extends AppBaseController
         $skip = $request->post('skip');
         $limit = $request->post('limit');
         $total = $query->count();
-        $items = $query->offset($skip)->limit($limit)->get()->toArray();
+        $items = $query->orderByDesc('id')->offset($skip)->limit($limit)->get()->toArray();
 
 
 
