@@ -48,7 +48,7 @@ class AuthController extends Controller
         $user['msg_count'] = 0;
         $user['send_count']  = 0;
 
-        if(empty($user['birthday'])){
+        if(!empty($user['birthday'])){
             $user['age'] = date("Y") - date("Y",strtotime($user['birthday']));
         }else{
             $user['age'] = '';
