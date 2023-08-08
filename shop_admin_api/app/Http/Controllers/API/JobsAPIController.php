@@ -227,6 +227,7 @@ class JobsAPIController extends AppBaseController
                 $item['report_user'] = [
                     'avatar' => $storeMap[$item['uid']]['avatar'] ?? '',
                     'nickname' => $storeMap[$item['uid']]['nickname'] ?? '',
+                    'real_name' => $storeMap[$item['uid']]['real_name'] ?? '',
                     'mobile' => $storeMap[$item['uid']]['mobile'] ?? '',
                     'sex' => $storeMap[$item['uid']]['sex'] ?? '',
                 ];
