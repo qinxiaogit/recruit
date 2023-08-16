@@ -224,12 +224,17 @@ class JobsAPIController extends AppBaseController
         $jobMap = array_column($jobs, null, 'id');
         foreach ($items as $key => $item) {
             if (isset($storeMap[$item['uid']])) {
+                $birthday = $storeMap[$item['uid']]['birthday'] ?? '';
+                if(!empty($birthday)){
+                    $birthday = date("Y") - date("Y", strtotime($birthday));
+                }
                 $item['report_user'] = [
                     'avatar' => $storeMap[$item['uid']]['avatar'] ?? '',
                     'nickname' => $storeMap[$item['uid']]['nickname'] ?? '',
                     'real_name' => $storeMap[$item['uid']]['real_name'] ?? '',
                     'mobile' => $storeMap[$item['uid']]['mobile'] ?? '',
                     'sex' => $storeMap[$item['uid']]['sex'] ?? '',
+                    'age' => $birthday
                 ];
                 $item['report_job'] = $jobMap[$item['job_id']] ?? null;
             }else{
