@@ -42,7 +42,6 @@ class JobsAPIController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $where = [];
         $where['store_id'] = auth()->user()->store_id;
         $jobs = $this->jobsRepository->all(
             $where,
