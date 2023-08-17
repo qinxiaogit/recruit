@@ -201,6 +201,8 @@ class JobsAPIController extends AppBaseController
         if ($jobId) {
             $where['job_id'] = $jobId;
         }
+        $where['store_id'] = auth()->user()->store_id;
+
         $query = DB::table("job_report_records");
         if (!empty($where)) {
             $query = $query->where($where);
@@ -208,7 +210,9 @@ class JobsAPIController extends AppBaseController
         $skip = $request->post('skip');
         $limit = $request->post('limit');
         $total = $query->count();
-        $items = $query->orderByDesc('id')->offset($skip)->limit($limit)->get()->toArray();
+        $items = $query
+            ->leftJoin("jobs",'job_report_records.job_id=jobs.id')
+            ->orderByDesc('id')->offset($skip)->limit($limit)->get()->toArray();
 
 
 

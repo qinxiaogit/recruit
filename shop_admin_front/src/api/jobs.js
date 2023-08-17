@@ -58,3 +58,11 @@ export function reportStatusJob(params) {
   })
 }
 
+export function deleteJob(id,params) {
+  return request({
+    url: '/v1/jobs/'+id,
+    method: 'DELETE',
+    data: params
+  })
+}
+
