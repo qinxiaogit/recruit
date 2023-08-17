@@ -207,7 +207,7 @@ class JobsAPIController extends AppBaseController
         if (!empty($where)) {
             $query = $query->where($where);
         }
-        $query->leftJoin("jobs",'job_report_records.job_id=jobs.id');
+        $query->leftJoin("jobs",'job_report_records.job_id','=','jobs.id');
         $skip = $request->post('skip');
         $limit = $request->post('limit');
         $total = $query->count();
