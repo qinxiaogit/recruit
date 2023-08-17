@@ -212,7 +212,7 @@ class JobsAPIController extends AppBaseController
         $limit = $request->post('limit');
         $total = $query->count();
         $items = $query
-            ->orderByDesc('id')->offset($skip)->limit($limit)->get()->toArray();
+            ->orderByDesc('id')->offset($skip)->limit($limit)->get("job_report_records.*")->toArray();
 
 
 
