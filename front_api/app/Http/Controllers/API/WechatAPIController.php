@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Overtrue\LaravelWeChat\Facade;
 
 /**
@@ -124,6 +125,26 @@ class WechatAPIController extends AppBaseController
         $response =$this->app->app_code->getUnlimit($scene,[
             'page'  => $path,
         ]);
-        var_dump($response);die();
+        if ($response instanceof \EasyWeChat\Kernel\Http\StreamResponse) {
+            $filename = $response->save('/tmp');
+
+            $localName = "/tmp/".$filename;
+            $remoteFile = 'qrcode/' . date("Ymd") . "/" . md5(time()).".png";
+
+            $remoteUrl = $this->upload_image($remoteFile, file_get_contents($localName));
+            unlink($localName);
+            return $this->sendResponse($remoteUrl, '上传成功');
+        }
+        $this->sendResponse($response->toArray(), '上传成功');
+    }
+    function upload_image($path, $file)
+    {
+        if (!$path) return false;
+        $disk = Storage::disk('qiniu');
+
+        //将文件上传到七牛云，并且返回七牛云上相对路径
+        $fileinfo = $disk->put($path, $file);
+        //用相对路径来获取图片的完整路径
+        return ['domain' => $disk->getUrl(''), 'path' => $path];
     }
 }
