@@ -117,9 +117,11 @@ class WechatAPIController extends AppBaseController
         $path = "pages/home/job";
         $jobId = $request->get("job_id");
         $inviteCode = $request->get("invite_code");
-        if(empty($jobId)){
-            return response()->json(['msg' => 'Unauthorized', 'code' => 66,  ],200);
+        $token = $request->get('token');
+        if (empty($jobId) || $token != "asdmasaskdajdmkaskmasmkasdmksdamkdskmsdkmdsmkcdsike9i38927y802") {
+            return response()->json(['msg' => 'Unauthorized', 'code' => 66,], 200);
         }
+
 
         $scene = "a=0&id=".$jobId."&invite_code=".$inviteCode;
         $response =$this->app->app_code->getUnlimit($scene,[

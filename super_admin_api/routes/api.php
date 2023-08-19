@@ -47,6 +47,7 @@ Route::group([
 
         Route::get('','API\\JobsAPIController@index');
         Route::put('{id}','API\\JobsAPIController@update');
+        Route::post('share','API\\JobsAPIController@share');
     });
 
     Route::Group(['prefix'=>'job_cat'],function (){

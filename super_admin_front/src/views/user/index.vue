@@ -35,9 +35,9 @@
           <span>{{ scope.row.real_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="生日" width="120" align="center">
+      <el-table-column label="年龄" width="120" align="center">
         <template slot-scope="scope">
-          {{ scope.row.birthday }}
+          {{ scope.row.age }}
         </template>
       </el-table-column>
       <el-table-column label="用户头像" width="160" align="center">

@@ -194,12 +194,18 @@ class JobsAPIController extends AppBaseController
     {
         $where = [];
         $status = $request->post('status');
-        if ($status > 0) {
-            $where['status'] = $status;
+        $sex = $request->post('sex');
+        $reportStartTime = $request->post('report_start_time');
+        $reportEndTime = $request->post('report_end_time');
+        if ($status > -1) {
+            $where['job_report_records.status'] = $status;
         }
         $jobId = $request->post('job_id');
-        if ($jobId) {
+        if ($jobId>0) {
             $where['job_id'] = $jobId;
+        }
+        if($sex>-1){
+            $where['app_user.sex'] = $sex;
         }
         $where['store_id'] = auth()->user()->store_id;
 
@@ -207,14 +213,19 @@ class JobsAPIController extends AppBaseController
         if (!empty($where)) {
             $query = $query->where($where);
         }
+        if(!empty($reportStartTime)&&!empty($reportEndTime)){
+            $query->whereBetween('job_report_records.created_at',[date("Y-m-d H:i:s",$reportStartTime),date("Y-m-d H:i:s",$reportEndTime+86400)]);
+        }
+
+        $query->whereNull('jobs.deleted_at');
         $query->leftJoin("jobs",'job_report_records.job_id','=','jobs.id');
+        $query->leftJoin("app_user",'job_report_records.uid','=','app_user.id');
+
         $skip = $request->post('skip');
         $limit = $request->post('limit');
         $total = $query->count();
         $items = $query
             ->orderByDesc('id')->offset($skip)->limit($limit)->get("job_report_records.*")->toArray();
-
-
 
         $items = json_decode(json_encode($items), true);
         $storeIdArr = array_column($items, 'uid');

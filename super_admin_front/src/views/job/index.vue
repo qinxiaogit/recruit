@@ -38,9 +38,13 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="职位名称" width="100">
+      <el-table-column label="职位名称" width="160">
         <template slot-scope="scope">
           {{ scope.row.name }}
+
+          <el-tooltip class="item" effect="dark" v-if="scope.row.audit_log" :content='scope.row.audit_log.extra.work_content' placement="top-start">
+          <span style="color: red;display: block;">{{scope.row.audit_log ? scope.row.audit_log.extra.name:""}}</span>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column label="是否置顶" width="100" align="center">
@@ -97,6 +101,7 @@
           <span v-if="scope.row.status == 0 "> 待审核 </span>
           <span v-else-if="scope.row.status == 1 "> 上架 </span>
           <span v-else>下架</span>
+          <span style="color: red;">{{scope.row.audit_log ? "(修改系统审核)":""}}</span>
         </template>
       </el-table-column>
 
@@ -109,8 +114,8 @@
             width="400"
             v-model="visible">
             <p>职位审核结果？</p>
-            <span style="display: block">职位名称：{{scope.row.name}}</span>
-            <span style="display: block">职位介绍：{{scope.row.work_content}}</span>
+            <span style="display: block">职位名称：{{scope.row.name}} <span style="color: red;">{{scope.row.audit_log?scope.row.audit_log.extra.name:""}}</span></span>
+            <span style="display: block">职位介绍：{{scope.row.work_content}} <span style="color: red">{{scope.row.audit_log ? scope.row.audit_log.extra.work_content:""}}</span></span>
             <span style="display: block">职位要求：{{scope.row.work_require}}</span>
             <span style="display: block">薪资说明：{{scope.row.salary}}/{{scope.row.unit}}</span>
 
@@ -121,15 +126,19 @@
               <el-button size="mini" type="text" @click="auditStore(scope.row, 1)">审核通过</el-button>
               <el-button type="primary" size="mini" @click="auditStore(scope.row, 2)">审核驳回</el-button>
             </div>
-            <el-button type="primary" slot="reference" v-if="parseInt(scope.row.status) ===0" icon="el-icon-position">
+            <el-button type="primary" style="margin-right: 5px;" slot="reference" v-if="parseInt(scope.row.status) ===0 || scope.row.audit_log " icon="el-icon-position">
               审核
             </el-button>
           </el-popover>
-          <el-button type="primary" @click="downStore(scope.row)" v-if="parseInt(scope.row.status) ===1"
+          <el-button type="primary" @click="downStore(scope.row)" v-if="parseInt(scope.row.status) ===1 "
                      icon="el-icon-bottom">下架
           </el-button>
           <el-button type="primary" @click="upStore(scope.row)" v-if="parseInt(scope.row.status) ===2"
                      icon="el-icon-top">上架
+          </el-button>
+
+          <el-button type="primary" @click="shareJob(scope.row)" v-if="parseInt(scope.row.status) ===1"
+                     icon="el-icon-share">分享
           </el-button>
         </template>
       </el-table-column>
@@ -144,6 +153,22 @@
                    :current-page.sync="currentPage"
     >
     </el-pagination>
+    <el-dialog
+      title="生成邀请码"
+      :visible.sync="dialogInviteCode"
+      width="30%"
+      :before-close="dialogInviteCodeClose">
+      <span>职位名称{{dialogJobName}}</span>
+      <el-input v-model="dialogUserMobile" @input="changeUserMobile" placeholder="请输入分享用户手机号" style="margin-top: 12px;"></el-input>
+      <el-image
+        v-if="jobShareUrl"
+        style="width: 100px; height: 100px;margin-top: 12px;"
+        :src="jobShareUrl"></el-image>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogInviteCode = false">取 消</el-button>
+    <el-button type="primary" :disabled="disableGen" @click="shareJobClick">生成分享码</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 <style>
@@ -155,7 +180,7 @@
 </style>
 
 <script>
-    import {JobList,UpdateJob} from '@/api/jobs'
+    import {JobList,UpdateJob,shareJob} from '@/api/jobs'
 
     export default {
         filters: {
@@ -170,6 +195,12 @@
         },
         data() {
             return {
+                disableGen:true,
+                jobShareUrl:"",
+                dialogJobName : "",
+                currentJobId : "",
+                dialogUserMobile: "",
+                dialogInviteCode:false,
                 list: null,
                 listLoading: true,
                 visible: false,
@@ -270,6 +301,25 @@
             },
             handleCurrentChange(val) {
                 this.fetchData()
+            },
+            shareJob(row){
+                this.dialogInviteCode = true
+                this.dialogJobName = row.name
+                this.currentJobId = row.id
+                console.log(row)
+            },
+            shareJobClick(){
+                shareJob({job_id:this.currentJobId,mobile:this.dialogUserMobile}).then(response=>{
+                    console.log(response)
+
+                    this.jobShareUrl=  response.data.domain+response.data.path
+                })
+            },
+            dialogInviteCodeClose(){
+                this.dialogInviteCode = false
+            },
+            changeUserMobile(){
+                this.disableGen = false
             }
         }
     }

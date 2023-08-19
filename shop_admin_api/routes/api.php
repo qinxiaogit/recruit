@@ -56,7 +56,7 @@ Route::group([
         Route::post('report','API\\JobsAPIController@report');
         Route::post('report_status','API\\JobsAPIController@reportStatus');
         Route::post('edit/{id}','API\\JobsAPIController@update');
-        Route::delete('delete/{id}','API\\JobsAPIController@destroy');
+        Route::delete('{id}','API\\JobsAPIController@destroy');
     });
 
     Route::Group(['prefix'=>'job_cat'],function (){

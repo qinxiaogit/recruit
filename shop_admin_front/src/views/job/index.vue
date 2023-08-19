@@ -96,10 +96,10 @@
           </el-card>
         </template>
       </el-table-column-->
-      <el-table-column align="center" label="商户状态" width="90">
+      <el-table-column align="center" label="商户状态" width="160">
         <template slot-scope="scope">
           <span v-if="scope.row.status == 0 "> 待审核 </span>
-          <span v-else-if="scope.row.status == 1 "> 上架 </span>
+          <span v-else-if="scope.row.status == 1 "> 上架 <span style="color: red;">{{scope.row.audit_log ? "(修改待系统审核)":""}} </span></span>
           <span v-else>下架</span>
         </template>
       </el-table-column>
@@ -112,6 +112,9 @@
           </el-button>
           <el-button type="primary" @click="upStore(scope.row)" v-if="parseInt(scope.row.status) ===2"
                      icon="el-icon-top">上架
+          </el-button>
+          <el-button type="primary" @click="deleteJob(scope.row.id)"
+                     icon="el-icon-delete">删除
           </el-button>
           <el-button type="primary" @click="showReport(scope.row)"
                      icon="el-icon-top">查看报名信息
@@ -139,7 +142,7 @@
 </style>
 
 <script>
-    import {JobList,UpdateJob} from '@/api/jobs'
+    import {JobList,UpdateJob,deleteJob} from '@/api/jobs'
 
     export default {
         filters: {
@@ -260,7 +263,20 @@
             },
             showReport(row){
                 this.$router.push({name: "reportList", query: {id: row.id}})
-            }
+            },
+            deleteJob(row) {
+                const loading = this.$loading({
+                    lock: true,
+                    text: '数据提交中',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                deleteJob(row, {status: 2}).then(response => {
+                    this.visible = false
+                    loading.close()
+                    this.fetchData()
+                })
+            },
         }
     }
 </script>

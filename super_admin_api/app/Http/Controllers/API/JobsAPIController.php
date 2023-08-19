@@ -173,4 +173,29 @@ class JobsAPIController extends AppBaseController
 
         return $this->sendSuccess('Jobs deleted successfully');
     }
+
+    /**
+     * @param Request $request
+     * @return
+     * @desc 分享
+     */
+    public function share(Request $request){
+        $jobId = $request->post('job_id');
+        $mobile = $request->post('mobile');
+        if(empty($jobId)){
+            return $this->sendError('Jobs not found');
+        }
+        $inviteCode = "";
+        if(!empty($mobile)){
+            $user = DB::table("app_user")->where(['mobile'=>$mobile])->first();
+            if(empty($user)){
+                return $this->sendError('该手机号未注册');
+            }
+            $inviteCode = $user->invite_code;
+        }
+        $token = 'asdmasaskdajdmkaskmasmkasdmksdamkdskmsdkmdsmkcdsike9i38927y802';
+        $data = file_get_contents("https://api.yunqirenli.com/api/v1/public/share?job_id={$jobId}&invite_code={$inviteCode}&token={$token}");
+        $dataArr = json_decode($data,true);
+        return $this->sendResponse(  $dataArr['data']??'','Jobs updated successfully');
+    }
 }

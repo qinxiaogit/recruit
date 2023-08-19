@@ -47,11 +47,12 @@
 <script>
 
     import {getToken} from '@/utils/auth'
-    import {StoreShow} from '@/api/store/list'
+    import {StoreShow,UpdateStore} from '@/api/store/list'
 
     export default {
         data() {
             return {
+                id:0,
                 form: {
                     name: '',
                     // region: '',
@@ -78,7 +79,9 @@
         },
         methods: {
             onSubmit() {
-                this.$message('submit!')
+                UpdateStore(this.id,this.form).then(response=>{
+                    this.$message('保存成功')
+                })
             },
             onCancel() {
                 this.$message({
@@ -100,6 +103,7 @@
                     self.form.logo = response.data.logo;
                     self.form.business_license = response.data.business_license;
                     self.form.contact = response.data.contact;
+                    self.id = response.data.id
                 });
             },
         }

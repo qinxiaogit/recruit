@@ -42,43 +42,56 @@ class AppUserAPIController extends AppBaseController
         if($request->get("nickname")){
             $where['nickname'] = $request->get('nickname');
         }
-        DB::enableQueryLog();
+//        DB::enableQueryLog();
+        $query = DB::table("app_user");
+        if(empty($where)){
+            $query->where($where);
+        }
 
         $sourceType = $request->get('source_type');
         if($sourceType){
             switch ($sourceType){
                 case "today_register":
-                    $where['>'] = '> '.date("Y-m-d")." 00:00:00";
+                    $query->whereBetween('created_at',[
+                        date("Y-m-d H:i:s",strtotime("00:00:00")),
+                        date("Y-m-d H:i:s",strtotime("+1 day 00:00:00")),
+                    ]);
+                    break;
+                case "today_create":
+                    $query->whereBetween('active_time',[
+                        date("Y-m-d H:i:s",strtotime("00:00:00")),
+                        date("Y-m-d H:i:s",strtotime("+1 day 00:00:00")),
+                    ]);
                     break;
             }
         }
+        $skip = $request->post('skip',0);
+        $limit = $request->post('limit',10);
+        $total = $query->count();
+        $items = $query->orderByDesc('id')->offset($skip)->limit($limit)->get("app_user.*")->toArray();
 
-        $appUsers = $this->appUserRepository->all(
-            $where,
-            $request->get('skip'),
-            $request->get('limit')
-        );
-        $items = $appUsers->toArray();
+        $items = json_decode(json_encode($items),true);
 
         $storeIdArr = array_column($items, 'invite_uid');
 
         $stores = AppUser::whereIn('id', $storeIdArr)->get()->toArray();
         $storeMap = array_column($stores, null, 'id');
-
         foreach ($items as $key => $item) {
-            if(isset($storeMap[$item['invite_uid']])){
+
+            if(!empty($storeMap) && isset($storeMap[$item['invite_uid']])){
                 $item['invite_user'] = [
                     'avatar' => $storeMap[$item['invite_uid']]['avatar'] ?? '',
                     'nickname' => $storeMap[$item['invite_uid']]['nickname'] ?? '',
                 ];
             }
+            $item['age'] = empty($item['birthday'])?"-":(date("Y") - date("Y",strtotime($item['birthday'])));
             $items[$key] = $item;
         }
 
         $data = [
             'items' => $items,
-            'total' => AppUser::where($where)->count(),
-            'where'=>DB::getQueryLog()
+            'total' => $total,
+//            'where'=>DB::getQueryLog()
         ];
         return $this->sendResponse($data, 'App Users retrieved successfully');
     }

@@ -12,26 +12,26 @@
       </el-form-item>
       <el-form-item label="工作方式">
         <el-radio-group v-model="form.method">
-          <el-radio label="1">线上</el-radio>
-          <el-radio label="2">线下</el-radio>
-          <el-radio label="0">不限</el-radio>
+          <el-radio :label="1">线上</el-radio>
+          <el-radio :label="2">线下</el-radio>
+          <el-radio :label="0">不限</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="性别">
         <el-radio-group v-model="form.sex">
-          <el-radio label="1">男</el-radio>
-          <el-radio label="2">女</el-radio>
-          <el-radio label="0">不限</el-radio>
+          <el-radio :label="1">男</el-radio>
+          <el-radio :label="2">女</el-radio>
+          <el-radio :label="0">不限</el-radio>
         </el-radio-group>
       </el-form-item>
 
       <el-form-item label="结算方式">
         <el-radio-group v-model="form.settlement">
-          <el-radio label="1">日结</el-radio>
-          <el-radio label="2">周结</el-radio>
-          <el-radio label="3">月结</el-radio>
-          <el-radio label="4">完工结</el-radio>
-          <el-radio label="5">其他</el-radio>
+          <el-radio :label="1">日结</el-radio>
+          <el-radio :label="2">周结</el-radio>
+          <el-radio :label="3">月结</el-radio>
+          <el-radio :label="4">完工结</el-radio>
+          <el-radio :label="5">其他</el-radio>
         </el-radio-group>
       </el-form-item>
 
@@ -40,14 +40,16 @@
       </el-form-item>
 
       <el-form-item label="工作时间">
-        <el-col :span="11">
-          <el-date-picker v-model="form.work_start_time" value-format="yyyyMMDD" type="date" placeholder="Pick a date" style="width: 100%;"/>
-        </el-col>
-        <el-col :span="2" class="line">-</el-col>
-        <el-col :span="11">
-          <el-date-picker v-model="form.work_end_time" value-format="yyyyMMDD"  type="date" placeholder="Pick a date"
-                          style="width: 100%;"/>
-        </el-col>
+        <div class="block">
+          <el-date-picker
+            v-model="form.work_start_time"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            format="yyyy 年 MM 月 dd 日"
+            end-placeholder="结束日期">
+          </el-date-picker>
+        </div>
       </el-form-item>
 
       <el-form-item label="工作内容">
@@ -156,13 +158,29 @@
             handleCascaderChange() {
 
             },
+            handleDate (date){
+                let year = date.getFullYear();
+                let month = date.getMonth()+1
+                if(month<10){
+                    month = "0"+month
+                }
+                let day = date.getDate()+1
+                if(day<10){
+                    day = "0"+day
+                }
+                return year+""+month+""+day
+            },
             onSubmit() {
-                this.$message('submit!')
+                // this.$message('submit!')
                 let form = this.form
                 let self = this
 
                 form['one_cate_id'] = this.value[0];
                 form['two_cate_id'] = this.value[1];
+
+                let workDate = form.work_start_time
+                form.work_start_time = this.handleDate(workDate[0])
+                form.work_end_time = this.handleDate(workDate[1])
                 if (this.$route.query.id) {
                     EditJob(this.$route.query.id,form).then(response=>{
                         self.$message({
@@ -198,18 +216,33 @@
                     self.form.name = response.data.name
                     self.form.method = parseInt(response.data.method)
                     self.form.sex = parseInt(response.data.sex)
-                    self.form.settlement = parseInt(response.data.settlement)
+                    self.form.settlement = response.data.settlement
+                    // console.log(self.form.settlement)
                     self.form.employ_count = response.data.employ_count
-
-                    self.form.work_start_time = response.data.work_start_time
-                    self.form.work_end_time = response.data.work_end_time
+                    let  startTime = response.data.work_start_time+""
+                    let  endTime = response.data.work_end_time+""
+                    self.form.work_start_time = [new Date(
+                        startTime.substr(0,4),
+                        startTime.substr(4,2),
+                        startTime.substr(6,2)
+                    ),new Date(
+                        endTime.substr(0,4),
+                        endTime.substr(4,2),
+                        endTime.substr(6,2)
+                    )]
+                    // self.form.work_end_time = response.data.work_end_time
                     self.form.work_require = response.data.work_require
                     self.form.work_content = response.data.work_content
                     self.form.salary_desc = response.data.salary_desc
                     self.form.salary = response.data.salary
                     self.form.unit = response.data.unit
                     self.form.age_start = response.data.age_start
-                    self.form.age_end = response.data.end
+                    self.form.age_end = response.data.age_end
+
+                    self.form.contact_qrcode = response.data.contact_qrcode
+                    self.form.contact_qq = response.data.contact_qq
+                    self.form.contact_wx = response.data.contact_wx
+                    self.form.contact_mobile = response.data.contact_mobile
 
 
 

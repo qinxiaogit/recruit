@@ -17,3 +17,13 @@ export function UpdateJob(id,params) {
   })
 }
 
+
+export function shareJob(params) {
+  return request({
+    url: '/v1/jobs/share',
+    method: 'post',
+    data:params
+  })
+}
+
+

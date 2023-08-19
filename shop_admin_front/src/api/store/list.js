@@ -47,3 +47,12 @@ export function StoreShow(data) {
   })
 }
 
+export function UpdateStore(id, params) {
+  return request({
+    url: '/v1/store/' + id,
+    method: 'put',
+    params
+  })
+}
+
+
