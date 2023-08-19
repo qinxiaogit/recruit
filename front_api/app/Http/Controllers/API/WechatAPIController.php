@@ -105,4 +105,25 @@ class WechatAPIController extends AppBaseController
             ]
         ]);
     }
+
+
+    /**
+     * @分享
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function share(Request $request){
+        $path = "pages/home/job";
+        $jobId = $request->get("job_id");
+        $inviteCode = $request->get("invite_code");
+        if(empty($jobId)){
+            return response()->json(['msg' => 'Unauthorized', 'code' => 66,  ],200);
+        }
+
+        $scene = "id=".$jobId."&invite_code=".$inviteCode;
+        $response =$this->app->app_code->getUnlimit($scene,[
+            'page'  => $path,
+        ]);
+        var_dump($response);die();
+    }
 }
