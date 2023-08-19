@@ -199,6 +199,7 @@
                 this.dialogJobName = row.name
                 this.currentJobId = row.id
                 this.dialogUserMobile = row.mobile
+                this.jobShareUrl = ''
                 console.log(row)
             },
             shareJobClick(){
