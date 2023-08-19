@@ -309,7 +309,7 @@
                 console.log(row)
             },
             shareJobClick(){
-                shareJob({job_id:this.currentJobId,mobile:this.dialogUserMobile}).then(response=>{
+                shareJob({job_id:this.currentJobId,mobile:this.dialogUserMobile,source:'job'}).then(response=>{
                     console.log(response)
 
                     this.jobShareUrl=  response.data.domain+response.data.path

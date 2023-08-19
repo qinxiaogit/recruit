@@ -40,15 +40,14 @@
           {{ scope.row.age }}
         </template>
       </el-table-column>
-      <el-table-column label="用户头像" width="160" align="center">
+      <!--el-table-column label="用户头像" width="160" align="center">
         <template slot-scope="scope">
           <el-image
             style="width: 100px; height: 100px"
             :src="scope.row.avatar"
             fit="cover"></el-image>
         </template>
-      </el-table-column>
-
+      </el-table-column-->
       <el-table-column label="联系方式" width="120" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.mobile }}</span>
@@ -84,34 +83,13 @@
       </el-table-column>
 
 
-      <!--el-table-column align="center" style="display: none;" prop="created_at" label="操作">
+      <el-table-column align="center" prop="created_at" label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" @click="updateStore(scope.row)" style="display: none;" icon="el-icon-edit">编辑
-          </el-button>
-          <el-popover
-            placement="top"
-            width="350"
-            v-model="visible">
-            <p>企业入驻审核结果？</p>
-            <el-input placeholder="请输入内容" style="margin-bottom: 10px;" v-model="auditReason">
-              <template slot="prepend">审核操作原因</template>
-            </el-input>
-            <div style="text-align: right; margin: 0">
-              <el-button size="mini" type="text" @click="auditStore(scope.row, 0)">审核通过</el-button>
-              <el-button type="primary" size="mini" @click="auditStore(scope.row, 1)">审核驳回</el-button>
-            </div>
-            <el-button type="primary" slot="reference" v-if="parseInt(scope.row.status) ===0" icon="el-icon-position">
-              审核
-            </el-button>
-          </el-popover>
-          <el-button type="primary" @click="downStore(scope.row)" v-if="parseInt(scope.row.status) ===1"
-                     icon="el-icon-bottom">下架
-          </el-button>
-          <el-button type="primary" @click="upStore(scope.row)" v-if="parseInt(scope.row.status) ===2"
-                     icon="el-icon-top">上架
+          <el-button type="primary" @click="shareJob(scope.row)"
+                     icon="el-icon-share">分享
           </el-button>
         </template>
-      </el-table-column -->
+      </el-table-column>
     </el-table>
     <el-pagination style="float: right;margin-top:20px;"
                    background
@@ -122,6 +100,22 @@
                    :current-page.sync="currentPage"
     >
     </el-pagination>
+    <el-dialog
+      title="生成邀请码"
+      :visible.sync="dialogInviteCode"
+      width="30%"
+      :before-close="dialogInviteCodeClose">
+      <!--span>职位名称{{dialogJobName}}</span>
+      <el-input v-model="dialogUserMobile" @input="changeUserMobile" placeholder="请输入分享用户手机号" style="margin-top: 12px;"></el-input-->
+      <el-image
+        v-if="jobShareUrl"
+        style="width: 100px; height: 100px;margin-top: 12px;"
+        :src="jobShareUrl"></el-image>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogInviteCode = false">取 消</el-button>
+    <el-button type="primary" :disabled="disableGen" @click="shareJobClick">生成分享码</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 <style>
@@ -134,6 +128,8 @@
 
 <script>
     import {UserList} from '@/api/user'
+    import {shareJob} from '@/api/jobs'
+
 
     export default {
         filters: {
@@ -148,6 +144,12 @@
         },
         data() {
             return {
+                disableGen:false,
+                jobShareUrl:"",
+                dialogJobName : "",
+                currentJobId : "",
+                dialogUserMobile: "",
+                dialogInviteCode:false,
                 list: null,
                 listLoading: true,
                 visible: false,
@@ -191,6 +193,26 @@
             },
             handleCurrentChange(val) {
                 this.fetchData()
+            },
+            shareJob(row){
+                this.dialogInviteCode = true
+                this.dialogJobName = row.name
+                this.currentJobId = row.id
+                this.dialogUserMobile = row.mobile
+                console.log(row)
+            },
+            shareJobClick(){
+                shareJob({job_id:this.currentJobId,mobile:this.dialogUserMobile,source:'home'}).then(response=>{
+                    console.log(response)
+
+                    this.jobShareUrl=  response.data.domain+response.data.path
+                })
+            },
+            dialogInviteCodeClose(){
+                this.dialogInviteCode = false
+            },
+            changeUserMobile(){
+                this.disableGen = false
             }
         }
     }

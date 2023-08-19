@@ -193,8 +193,15 @@ class JobsAPIController extends AppBaseController
             }
             $inviteCode = $user->invite_code;
         }
+        switch ($request->post('source')){
+            case "job":
+                $path = "pages/home/job";
+                break;
+            default:
+                $path = "pages/home/index";
+        }
         $token = 'asdmasaskdajdmkaskmasmkasdmksdamkdskmsdkmdsmkcdsike9i38927y802';
-        $data = file_get_contents("https://api.yunqirenli.com/api/v1/public/share?job_id={$jobId}&invite_code={$inviteCode}&token={$token}");
+        $data = file_get_contents("https://api.yunqirenli.com/api/v1/public/share?id={$jobId}&invite_code={$inviteCode}&token={$token}&path={$path}");
         $dataArr = json_decode($data,true);
         return $this->sendResponse(  $dataArr['data']??'','Jobs updated successfully');
     }

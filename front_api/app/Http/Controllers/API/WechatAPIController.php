@@ -115,15 +115,21 @@ class WechatAPIController extends AppBaseController
      */
     public function share(Request $request){
         $path = "pages/home/job";
-        $jobId = $request->get("job_id");
+        $reqPath = $request->get('path',$path);
+        $jobId = $request->get("id");
         $inviteCode = $request->get("invite_code");
         $token = $request->get('token');
-        if (empty($jobId) || $token != "asdmasaskdajdmkaskmasmkasdmksdamkdskmsdkmdsmkcdsike9i38927y802") {
+        if ($token != "asdmasaskdajdmkaskmasmkasdmksdamkdskmsdkmdsmkcdsike9i38927y802") {
             return response()->json(['msg' => 'Unauthorized', 'code' => 66,], 200);
         }
-
-
-        $scene = "a=0&id=".$jobId."&invite_code=".$inviteCode;
+        switch ($reqPath){
+            case $path:
+                $scene = "id=".$jobId."&invite_code=".$inviteCode;
+                break;
+            default:
+                $scene = "invite_code=".$inviteCode;
+                break;
+        }
         $response =$this->app->app_code->getUnlimit($scene,[
             'page'  => $path,
         ]);
