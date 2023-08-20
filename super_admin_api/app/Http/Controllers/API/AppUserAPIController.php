@@ -77,11 +77,12 @@ class AppUserAPIController extends AppBaseController
         $stores = AppUser::whereIn('id', $storeIdArr)->get()->toArray();
         $storeMap = array_column($stores, null, 'id');
         foreach ($items as $key => $item) {
-
             if(!empty($storeMap) && isset($storeMap[$item['invite_uid']])){
                 $item['invite_user'] = [
                     'avatar' => $storeMap[$item['invite_uid']]['avatar'] ?? '',
                     'nickname' => $storeMap[$item['invite_uid']]['nickname'] ?? '',
+                    'real_name' => $storeMap[$item['invite_uid']]['real_name'] ?? '',
+                    'mobile' => $storeMap[$item['invite_uid']]['mobile'] ?? '',
                 ];
             }
             $item['age'] = empty($item['birthday'])?"-":(date("Y") - date("Y",strtotime($item['birthday'])));

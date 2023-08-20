@@ -73,9 +73,9 @@
       <el-table-column align="center" prop="created_at" label="邀请人" width="200">
         <template slot-scope="scope">
           <el-card v-if="scope.row.invite_user" :body-style="{ padding: '0px' }">
-            <img style="width: 100px; height: 100px;" :src=scope.row.invite_user.avatar  class="image">
+            <img style="width: 100px; height: 100px;" :src=scope.row.invite_user.mobile  class="image">
             <div style="padding: 14px;">
-              <span>{{ scope.row.invite_user.nickname }}</span>
+              <span>{{ scope.row.invite_user.real_name }}</span>
             </div>
           </el-card>
           <span v-else> 无邀请人</span>
