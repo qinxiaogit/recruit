@@ -13,20 +13,20 @@ class ConfAPIController extends AppBaseController
     {
         $banner = [
             [
-                "linkUrl" =>  'pages/home/job',
+                "linkUrl" =>  '/pages/home/job',
                 "jumpType" => 2,
                 "picUrl" => 'https://cdn.yunqirenli.com/banner/banner_01.jpeg',
                 "id" => 6
             ],
             [
-                "linkUrl" =>  'pages/home/job',
+                "linkUrl" =>  '/pages/home/job',
                 "picUrl" => 'https://cdn.yunqirenli.com/banner/banner_02.png',
                 "jumpType" => 2,
                 "id" => 9
             ]
             ,
             [
-                "linkUrl" => 'pages/home/job',
+                "linkUrl" => '/pages/home/job',
                 "picUrl" => 'https://cdn.yunqirenli.com/banner/banner_03.png',
                 "id" => 8,
                 "jumpType" => 2
