@@ -160,6 +160,7 @@ class AuthController extends Controller
 //        $user->nickname = $nickname;
         $user->sex = $sex;
 //        $user->avatar = $avatar;
+        $user->avatar = AppUser::randomAvatar();
         $user->birthday = date("Y-m-d", strtotime($birthday));
         $user->save();
         return response()->json($user);

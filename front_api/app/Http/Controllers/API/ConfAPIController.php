@@ -12,21 +12,22 @@ class ConfAPIController extends AppBaseController
     public function banner()
     {
         $banner = [
-            ["linkUrl" => 'http://y.qq.com/w/album.html?albummid=0044K2vN1sT5mE',
-                "jumpType" => 1,
-                "picUrl" => 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001YCZlY3aBifi.jpg',
+            [
+                "linkUrl" =>  'pages/home/job?id=6',
+                "jumpType" => 2,
+                "picUrl" => 'https://cdn.yunqirenli.com/banner/banner_01.jpeg',
                 "id" => 11351
             ],
             [
-                "linkUrl" => 'https://y.qq.com/m/digitalbum/gold/index.html?_video=true&id=2197820&g_f=shoujijiaodian',
-                "picUrl" => 'http://y.gtimg.cn/music/photo_new/T003R720x288M000004ckGfg3zaho0.jpg',
-                "jumpType" => 1,
+                "linkUrl" =>  'pages/home/job?id=9',
+                "picUrl" => 'https://cdn.yunqirenli.com/banner/banner_02.png',
+                "jumpType" => 2,
                 "id" => 11372
             ]
             ,
             [
-                "linkUrl" => '/pages/logs',
-                "picUrl" => 'http://y.gtimg.cn/music/photo_new/T003R720x288M00000236sfA406cmk.jpg',
+                "linkUrl" => 'pages/home/job?id=8',
+                "picUrl" => 'https://cdn.yunqirenli.com/banner/banner_03.png',
                 "id" => 11378,
                 "jumpType" => 2
             ]

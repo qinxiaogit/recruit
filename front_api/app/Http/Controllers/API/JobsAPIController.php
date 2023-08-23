@@ -235,7 +235,14 @@ class JobsAPIController extends AppBaseController
         ])->limit(8)->get('uid')->toArray();
         $uidArr = array_column($reportArr, 'uid');
         if (!empty($uidArr)) {
-            $uidArr = AppUser::whereIn('id', $uidArr)->get()->toArray();
+            $uidArr = AppUser::whereIn('id', $uidArr)->get("id,avatar,invite_code")->toArray();
+            foreach ($uidArr as $key=>$item){
+                if($item['avatar'] == ""|| $item['avatar'] == 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132'){
+                    $item['avatar'] = AppUser::randomAvatar();
+                    $uidArr[$key] = $item;
+                }
+            }
+
         }
         return $this->sendResponse($uidArr, 'Jobs retrieved successfully');
     }
