@@ -88,7 +88,7 @@ class JobsAPIController extends AppBaseController
                 ];
             }
             $nameLength =  mb_strlen($list['name']);
-            $list["name"] = $nameLength>12? (mb_substr($list['name'],0,12)."..."):$list['name'];
+            $list["name"] = $nameLength>24? (mb_substr($list['name'],0,24)."..."):$list['name'];
             $list['unit_desc'] = $list['salary'] . "/" . $list['unit'];
             $list['tags'] = $tags;
             $lists[$key] = $list;
