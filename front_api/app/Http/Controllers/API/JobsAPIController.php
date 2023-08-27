@@ -71,6 +71,10 @@ class JobsAPIController extends AppBaseController
         foreach ($lists as $key => $list) {
             $list = json_decode(json_encode($list), true);
             $tags = [];
+            $tags[] = [
+                'id'=>-2,
+                'name'=>$list['store_name']
+            ];
             if (isset($catArr[$list['one_cate_id']])) {
                 $tags[] = [
                     'id' => $list['one_cate_id'],
