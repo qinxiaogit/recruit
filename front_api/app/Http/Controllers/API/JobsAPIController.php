@@ -70,37 +70,44 @@ class JobsAPIController extends AppBaseController
             $catArr = DB::table("job_cate")->whereIn('id', $cateIdArr)->get(["id", "name"])->toArray();
             $catArr = array_column($catArr, 'name', 'id');
         }
+        $i = random_int(0,3);
         foreach ($lists as $key => $list) {
             $list = json_decode(json_encode($list), true);
             $tags = [];
             $tags[] = [
                 'id'=>-2,
                 'name'=>$list['store_name'],
-                'type'=> $tagTypes[random_int(0,3)]
+                'type'=> $tagTypes[$i]
             ];
+            $i = $i>2?0:$i+1;
+
             if(!empty($list['age_start'])){
                 $tags[] = [
                     'id'=>-1,
                     'name'=>$list['age_start']."岁以上",
-                    'type'=> $tagTypes[random_int(0,3)]
+                    'type'=> $tagTypes[$i]
                 ];
+                $i = $i>2?0:$i+1;
             }
-
 
             if (isset($catArr[$list['one_cate_id']])) {
                 $tags[] = [
                     'id' => $list['one_cate_id'],
                     'name' => $catArr[$list['one_cate_id']],
-                    'type'=> $tagTypes[random_int(0,3)]
+                    'type'=> $tagTypes[$i]
                 ];
+                $i = $i>2?0:$i+1;
             }
+
             if (isset($catArr[$list['two_cate_id']])) {
                 $tags[] = [
                     'id' => $list['two_cate_id'],
                     'name' => $catArr[$list['two_cate_id']],
-                    'type'=> $tagTypes[random_int(0,3)]
+                    'type'=> $tagTypes[$i]
                 ];
+                $i = $i>2?0:$i+1;
             }
+
             $nameLength =  mb_strlen($list['name']);
             $list["name"] = $nameLength>24? (mb_substr($list['name'],0,24)."..."):$list['name'];
             $list['unit_desc'] = $list['salary'] . "/" . $list['unit'];
