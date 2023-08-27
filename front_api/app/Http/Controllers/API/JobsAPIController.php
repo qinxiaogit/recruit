@@ -56,11 +56,13 @@ class JobsAPIController extends AppBaseController
             ->orderBy('sort', 'asc')
             ->offset(($page - 1) * $size)
             ->limit($size)
-            ->get(["j.id", "is_top", "j.name", "unit", 'salary', "s.name as store_name", "report_count", "one_cate_id", "two_cate_id"])
+            ->get(["j.id", "is_top", "j.name", "unit", 'salary', "s.name as store_name", "report_count", "one_cate_id", "two_cate_id",'age_start'])
             ->toArray();
 
         $oneCateIdArr = array_column($lists, 'one_cate_id');
         $twoCateIdArr = array_column($lists, 'two_cate_id');
+
+        $tagTypes = ['primary','success','danger','warning'];
 
         $cateIdArr = array_merge($oneCateIdArr, $twoCateIdArr);
         $catArr = [];
@@ -73,18 +75,30 @@ class JobsAPIController extends AppBaseController
             $tags = [];
             $tags[] = [
                 'id'=>-2,
-                'name'=>$list['store_name']
+                'name'=>$list['store_name'],
+                'type'=> $tagTypes[random_int(0,3)]
             ];
+            if(!empty($list['age_start'])){
+                $tags[] = [
+                    'id'=>-1,
+                    'name'=>$list['age_start']."岁以上",
+                    'type'=> $tagTypes[random_int(0,3)]
+                ];
+            }
+
+
             if (isset($catArr[$list['one_cate_id']])) {
                 $tags[] = [
                     'id' => $list['one_cate_id'],
-                    'name' => $catArr[$list['one_cate_id']]
+                    'name' => $catArr[$list['one_cate_id']],
+                    'type'=> $tagTypes[random_int(0,3)]
                 ];
             }
             if (isset($catArr[$list['two_cate_id']])) {
                 $tags[] = [
                     'id' => $list['two_cate_id'],
-                    'name' => $catArr[$list['two_cate_id']]
+                    'name' => $catArr[$list['two_cate_id']],
+                    'type'=> $tagTypes[random_int(0,3)]
                 ];
             }
             $nameLength =  mb_strlen($list['name']);
