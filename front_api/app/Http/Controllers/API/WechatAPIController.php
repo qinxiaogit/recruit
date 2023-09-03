@@ -141,13 +141,16 @@ class WechatAPIController extends AppBaseController
 
         if($shareMethod == 2){
             try {
-                $response = $this->app->app_code->requestRaw("wxa/generate_urllink", "POST", [
+                $response = $this->app->app_code->httpPostJson("wxa/generate_urllink",  [
+
                         "page_url"=>$scene."&scene=".urlencode($scene),
                         "expire_type"=>0,
                         "expire_time"=>strtotime("+30day")
-                ]);
-            } catch (\Exception $e) {
 
+                ]);
+                var_dump($response->getBody()->getContents());die();
+            } catch (\Exception $e) {
+                var_dump($e->getMessage());die();
             }
             //https://api.weixin.qq.com/wxa/genwxashortlink?access_token=ACCESS_TOKEN
 //            $response =$this->app->access_token->getLastToken()
