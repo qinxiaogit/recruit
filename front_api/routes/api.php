@@ -57,7 +57,7 @@ Route::group([
         Route::get('stat','API\\ConfAPIController@stat');
         Route::get('protocol','API\\ConfAPIController@protocol');
 
-        Route::post('report','API\\AgentAPIController@protocol');
+        Route::post('report','API\\AgentAPIController@report');
     });
 
     Route::Group(['prefix'=>'public'],function (){
