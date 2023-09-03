@@ -148,7 +148,7 @@ class WechatAPIController extends AppBaseController
                         "expire_time"=>strtotime("+29day")
 
                 ]);
-                $this->sendResponse([
+                return $this->sendResponse([
                     "path"=> $response['url_link']??'',
                     "domain"=> $response,
                 ], '上传成功');
