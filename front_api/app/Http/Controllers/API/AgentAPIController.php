@@ -36,6 +36,7 @@ class AgentAPIController extends AppBaseController
 
         $agentUid = base_convert($agentCode, 36, 10) - AppUser::USER_INVITE_CODE_START ;
 
+        DB::enableQueryLog();
         DB::table('promotion_job')->where(['uid' => $agentCode,'view'=>$path])->increment('view_count', 1);
 
         DB::table("promotion_job_log")->insert([
@@ -45,6 +46,7 @@ class AgentAPIController extends AppBaseController
             'path' =>$path,
             'params' =>json_encode($_POST)
         ]);
-        $this->sendSuccess("上报成功");
+
+        return $this->sendResponse(DB::getQueryLog(),"上报成功");
     }
 }
