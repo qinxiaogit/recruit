@@ -44,7 +44,8 @@ class AgentAPIController extends AppBaseController
             'uid' => $uid,
             'agent_id' =>$agentUid,
             'path' =>$path,
-            'params' =>json_encode($_POST)
+            'params' =>json_encode($_POST),
+            "created_at"=> date("Y-m-d H:i:s")
         ]);
 
         return $this->sendResponse("","上报成功");
