@@ -142,13 +142,17 @@ class WechatAPIController extends AppBaseController
         if($shareMethod == 2){
             try {
                 $response = $this->app->app_code->httpPostJson("wxa/generate_urllink",  [
-
-                        "page_url"=>$scene."&scene=".urlencode($scene),
+                        "page_url"=>$scene,
                         "expire_type"=>0,
                         "expire_time"=>strtotime("+30day")
 
                 ]);
-                var_dump($response);die();
+
+                var_dump([$response,
+                    "page_url"=>$scene."&scene=".urlencode($scene),
+                    "expire_type"=>0,
+                    "expire_time"=>strtotime("+30day")
+                    ]);die();
             } catch (\Exception $e) {
                 var_dump($e->getMessage());die();
             }
