@@ -112,6 +112,13 @@ export const constantRoutes = [
         name: '用户数据',
         component: () => import('@/views/user/index'),
         meta: { title: '用户数据', icon: 'el-icon-user' }
+      },
+      {
+        path: 'promotionPage',
+        name: 'promotionPage',
+        component: () => import('@/views/user/promotion'),
+        meta: { title: '推广数据', icon: 'el-icon-user' },
+        hidden: true
       }
     ]
   },

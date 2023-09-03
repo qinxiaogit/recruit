@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\DB;
 use Response;
+use Illuminate\Support\Facades\Hash;
+
 
 /**
  * Class AppUserController
@@ -40,11 +42,11 @@ class AppUserAPIController extends AppBaseController
         $where = [];
 
         if($request->get("nickname")){
-            $where['nickname'] = $request->get('nickname');
+            $where['mobile'] = $request->get('nickname');
         }
 //        DB::enableQueryLog();
         $query = DB::table("app_user");
-        if(empty($where)){
+        if(!empty($where)){
             $query->where($where);
         }
 
@@ -181,5 +183,23 @@ class AppUserAPIController extends AppBaseController
         $appUser->delete();
 
         return $this->sendSuccess('App User deleted successfully');
+    }
+
+    public function agent(Request $request){
+        $uid = $request->post("uid");
+        $password = $request->post("password");
+        $status = intval($request->post("status"));
+        DB::table('app_user')->where(['id' => $uid])->update(['is_open_agent'=>$status,'agent_password'=>Hash::make($password)]);
+        return $this->sendResponse("","操作成功");
+    }
+    public function dashboash(Request $request){
+        $uid = $request->post("uid");
+        $data = DB::table('promotion_job as pj')
+            ->leftJoin("jobs as j","pj.view_id",'=','j.id')
+            ->leftJoin("stores as s","s.id",'=','j.store_id')
+            ->where("pj.uid",'=',$uid)
+            ->select("pj.*","j.name as job_name","s.name as store_name","s.logo")
+            ->get()->toArray();
+        return $this->sendResponse($data,"操作成功");
     }
 }

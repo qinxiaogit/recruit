@@ -29,3 +29,20 @@ export function UserList(params) {
     params
   })
 }
+
+export function SwitchAgent(params) {
+  return request({
+    url: '/v1/app_user/agent',
+    method: 'post',
+    data:params
+  })
+}
+
+
+export function DashboashAgent(params) {
+  return request({
+    url: '/v1/app_user/dashboash',
+    method: 'post',
+    data:params
+  })
+}

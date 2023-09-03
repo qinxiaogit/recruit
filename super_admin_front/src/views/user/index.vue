@@ -4,7 +4,7 @@
     <div class="demo-input-suffix">
       <template>
         <el-input
-          placeholder="请输入用户昵称"
+          placeholder="请输入用户手机号"
           prefix-icon="el-icon-search"
           v-model="search_name" style="width: 160px; margin-right: 10px; margin-left: 16px;">
         </el-input>
@@ -20,17 +20,17 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="ID" width="95">
+      <!--el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
           {{ scope.row.id }}
         </template>
-      </el-table-column>
-      <el-table-column label="用户昵称" width="100">
+      </el-table-column-->
+      <!--el-table-column label="用户昵称" width="100">
         <template slot-scope="scope">
           {{ scope.row.nickname }}
         </template>
-      </el-table-column>
-      <el-table-column label="用户真实名称" width="160" align="center">
+      </el-table-column-->
+      <el-table-column label="用户真实名称" width="100" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.real_name }}</span>
         </template>
@@ -91,6 +91,12 @@
           <el-button type="primary" @click="shareJob(scope.row)"
                      icon="el-icon-share">分享
           </el-button>
+          <el-button type="primary" @click="optionAgent(scope.row)"
+                     icon="el-icon-open">{{scope.row.is_open_agent ? "取消":"开通"}}代理推广
+          </el-button>
+          <el-button type="primary" @click="viewPromotionPage(scope.row)" v-if="scope.row.is_open_agent"
+                     icon="el-icon-open">推广数据
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -119,6 +125,20 @@
     <el-button type="primary" :disabled="disableGen" @click="shareJobClick">生成分享码</el-button>
   </span>
     </el-dialog>
+
+    <el-dialog
+      :title="dialogAgent"
+      :visible.sync="dialogAgentFlag"
+      width="30%"
+      :before-close="dialogInviteCodeClose">
+      <!--span>职位名称{{dialogJobName}}</span>
+      <el-input v-model="dialogUserMobile" @input="changeUserMobile" placeholder="请输入分享用户手机号" style="margin-top: 12px;"></el-input-->
+      <el-input placeholder="请输入密码" v-model="dialogAgentPassword" v-show="!currentAgentStatus" show-password></el-input>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogAgentFlag = false">取 消</el-button>
+    <el-button type="primary"  @click="optionAgentClick">确定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 <style>
@@ -130,10 +150,8 @@
 </style>
 
 <script>
-    import {UserList} from '@/api/user'
+    import {UserList,SwitchAgent} from '@/api/user'
     import {shareJob} from '@/api/jobs'
-
-
     export default {
         filters: {
             statusFilter(status) {
@@ -147,10 +165,15 @@
         },
         data() {
             return {
+                dialogAgent:"开通代理商",
+                dialogAgentFlag:false,
+                dialogAgentPassword:"",
+
                 disableGen:false,
                 jobShareUrl:"",
                 dialogJobName : "",
                 currentJobId : "",
+                currentAgentStatus : 0,
                 dialogUserMobile: "",
                 dialogInviteCode:false,
                 list: null,
@@ -212,12 +235,41 @@
                     this.jobShareUrl=  response.data.domain+response.data.path
                 })
             },
+            viewPromotionPage:function(row){
+                this.$router.push({name: "promotionPage",query: {id: row.id}})
+            },
             dialogInviteCodeClose(){
                 this.dialogInviteCode = false
+                this.dialogAgentFlag = false
             },
             changeUserMobile(){
                 this.disableGen = false
+            },
+            optionAgent(row){
+                this.currentJobId = row.id
+                this.dialogAgentFlag = true
+                this.currentAgentStatus = row.is_open_agent
+
+                if (this.currentAgentStatus == 1){
+                    this.dialogAgent = "取消代理商"
+                }
+            },
+            optionAgentClick(){
+                //开通
+                if (!this.currentAgentStatus &&  !this.dialogAgentPassword){
+                    this.$message('开通代理商密码不可为空')
+                }
+                SwitchAgent({
+                    'uid':this.currentJobId,
+                    'status': this.currentAgentStatus ? 0:1,
+                    'password':this.dialogAgentPassword
+                }).then(response=>{
+                    this.$message('操作成功')
+                    this.dialogAgentFlag = false
+                    this.fetchData();
+                })
             }
+
         }
     }
 </script>

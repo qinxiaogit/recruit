@@ -179,7 +179,7 @@ class FeedBackAPIController extends AppBaseController
             return $this->sendError("反馈数据已审核了");
         }
         //审核驳回结果
-        $feedback->status = $status ? 2 : 1;
+        $feedback->status = $status;
         if ($feedback->save()) {
             $adminLogRepository = new AuditLogRepository(app());
             $adminLogRepository->create([

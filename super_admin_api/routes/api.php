@@ -62,6 +62,8 @@ Route::group([
     Route::Group(['prefix'=>'app_user'],function (){
 
         Route::get('','API\\AppUserAPIController@index');
+        Route::post('agent','API\\AppUserAPIController@agent');
+        Route::post('dashboash','API\\AppUserAPIController@dashboash');
         Route::put('{id}','API\\JobsAPIController@update');
     });
 
