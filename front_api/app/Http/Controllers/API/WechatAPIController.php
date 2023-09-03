@@ -148,12 +148,10 @@ class WechatAPIController extends AppBaseController
                         "expire_time"=>strtotime("+29day")
 
                 ]);
-
-                var_dump([$response,
-                    "page_url"=>"/".$path."?".$scene,
-                    "expire_type"=>0,
-                    "expire_time"=>strtotime("+30day")
-                    ]);die();
+                $this->sendResponse([
+                    "path"=> $response['url_link']??'',
+                    "domain"=> $response,
+                ], '上传成功');
             } catch (\Exception $e) {
                 var_dump($e->getMessage());die();
             }
