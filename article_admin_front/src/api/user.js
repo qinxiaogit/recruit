@@ -22,10 +22,62 @@ export function logout() {
   })
 }
 
+/**
+ * @desc 用户列表
+ * @param params
+ * @returns {AxiosPromise}
+ * @constructor
+ */
 export function UserList(params) {
   return request({
-    url: '/auth/backend/app_user',
+    url: '/v1/backend/user/list',
     method: 'get',
-    params
+    params: params,
+  })
+}
+
+/**
+ * @desc 保存用户信息
+ * @returns {AxiosPromise}
+ * @constructor
+ */
+export function SaveUser(data) {
+  return request({
+    url: '/v1/backend/user/save',
+    method: 'post',
+    data: data,
+  })
+}
+
+//删除店铺信息
+export function UserDelete(data) {
+  return request({
+    url: '/v1/backend/user/delete',
+    method: 'post',
+    data: data,
+  })
+}
+
+
+/**
+ * 获取用户信息
+ * @param data
+ * @returns {AxiosPromise}
+ * @constructor
+ */
+export function UserShow(data) {
+  return request({
+    url: '/v1/backend/user/show',
+    method: 'get',
+    params: data,
+  })
+}
+
+
+export function DashboashAgent(params) {
+  return request({
+    url: '/v1/backend/jobs/dashboash',
+    method: 'post',
+    data:params
   })
 }

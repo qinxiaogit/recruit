@@ -5,8 +5,12 @@ namespace App\Http\Controllers\Backend;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\AppUser;
 use App\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use InfyOm\Generator\Utils\ResponseUtil;
+use Response;
 
 class AuthController extends Controller
 {
@@ -28,8 +32,17 @@ class AuthController extends Controller
     public function login()
     {
         $credentials = request(['username', 'password']);
+        $credentials['mobile'] = $credentials['username'];
+        unset($credentials['username']);
+        $appUser = AppUser::where(["mobile"=>$credentials['mobile']])->first();
+        if(empty($appUser)|| empty($appUser->is_open_agent)){
+            return Response::json(ResponseUtil::makeError("该手机号还未注册代理商平台"), 200);
+//            return response()->json(['error' => '该手机号还未注册代理商平台'],401);
+        }
         if (!$token = auth('backend')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return Response::json(ResponseUtil::makeError("密码错误"), 200);
+
+//            return response()->json(['error' => ''], 401);
         }
 
         return $this->respondWithToken($token);

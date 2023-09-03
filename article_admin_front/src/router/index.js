@@ -41,33 +41,34 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/dashboard',
-  //   children: [{
-  //     path: 'dashboard',
-  //     name: 'Dashboard',
-  //     component: () => import('@/views/dashboard/index'),
-  //     meta: { title: '店铺详情', icon: 'dashboard' }
-  //   }]
-  // },
+/*
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [{
+      path: 'dashboard',
+      name: 'Dashboard',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: '店铺详情', icon: 'dashboard' }
+    }]
+  },*/
+  /*
   {
     path: '/',
     component: Layout,
     children: [
       {
-        path: 'store',
-        name: '商家管理',
-        component: () => import('@/views/store/index'),
-        meta: { title: '商家管理', icon: 'el-icon-shopping-cart-2' }
+        path: 'jobSquare',
+        name: 'jobSquare',
+        component: () => import('@/views/square/index'),
+        meta: {title: '职位广场', icon: 'el-icon-shopping-cart-2'}
       },
       {
         path: 'update',
         name: 'updateStore',
         component: () => import('@/views/store/edit'),
-        meta: { title: '编辑商家', icon: 'el-icon-shopping-cart-2' },
+        meta: {title: '编辑商家', icon: 'el-icon-shopping-cart-2'},
         hidden: true
       },
     ]
@@ -76,82 +77,125 @@ export const constantRoutes = [
     path: '/job',
     component: Layout,
     iconCls: 'el-icon-cpu',
-    meta: { title: '职位', icon: 'el-icon-potato-strips' },
+    meta: {title: '职位', icon: 'el-icon-potato-strips'},
+    hidden: true,
     children: [
       {
         path: 'index',
         name: 'jobManage',
         component: () => import('@/views/job/index'),
-        meta: { title: '职位管理', icon: 'el-icon-cpu' }
+        meta: {title: '职位管理', icon: 'el-icon-cpu'}
       },
-    /*{
-        path: 'cat',
-        name: 'catList',
-        component: () => import('@/views/job/cat'),
-        meta: { title: '职位分类', icon: 'el-icon-cpu' }
-      },*/
+      /*{
+          path: 'cat',
+          name: 'catList',
+          component: () => import('@/views/job/cat'),
+          meta: { title: '职位分类', icon: 'el-icon-cpu' }
+        },*/
+  /*
       {
         path: 'catEdit',
         name: 'catEdit',
         component: () => import('@/views/job/cat_add'),
-        meta: { title: '新增', icon: 'el-icon-cpu' },
+        meta: {title: '新增', icon: 'el-icon-cpu'},
         hidden: true
-      },{
-        path:"editJob",
-        name:"editJob",
+      }, {
+        path: "editJob",
+        name: "editJob",
         component: () => import('@/views/job/job_edit'),
-        meta: { title: '新增或修改', icon: 'el-icon-cpu' },
+        meta: {title: '新增或修改', icon: 'el-icon-cpu'},
         hidden: true
-      },{
-        path:"reportList",
-        name:"reportList",
+      }, {
+        path: "reportList",
+        name: "reportList",
         component: () => import('@/views/job/report'),
-        meta: { title: '报名信息', icon: 'el-icon-cpu' },
+        meta: {title: '报名信息', icon: 'el-icon-cpu'},
         hidden: false
       }
     ]
   },
-
-
   {
     path: '/user',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: '用户数据',
+        name: 'userManage',
         component: () => import('@/views/user/index'),
-        meta: { title: '用户数据', icon: 'el-icon-user' },
+        meta: {title: '用户数据', icon: 'el-icon-user'},
+      },
+      {
+        path: 'updateUser',
+        name: 'updateUser',
+        component: () => import('@/views/user/user'),
+        meta: {title: '新增修改用户', icon: 'el-icon-user-solid'},
         hidden: true
-      }
+      },
     ]
   },
-
-
   {
-    path: '/data',
+    path: '/conf',
     component: Layout,
     children: [
       {
-        path: 'index',
-        name: '小程序数据',
-        component: () => import('@/views/data/index'),
-        meta: { title: '小程序数据', icon: 'el-icon-s-data' },
+        path: 'conf',
+        name: 'confManage',
+        component: () => import('@/views/conf/index'),
+        meta: {title: '系统配置', icon: 'el-icon-setting'},
+      },
+      {
+        path: 'updateBanner',
+        name: 'updateBanner',
+        component: () => import('@/views/conf/banner'),
+        meta: {title: '新增banner', icon: 'el-icon-user-solid'},
         hidden: true
-      }
+      },
+      {
+        path: 'blockBanner',
+        name: 'blockBanner',
+        component: () => import('@/views/conf/block'),
+        meta: {title: '新增首页入口', icon: 'el-icon-user-solid'},
+        hidden: true
+      },
+      {
+        path: 'courseBanner',
+        name: 'courseBanner',
+        component: () => import('@/views/conf/course'),
+        meta: {title: '新增培训课程banner', icon: 'el-icon-user-solid'},
+        hidden: true
+      },
+      {
+        path: 'developBanner',
+        name: 'developBanner',
+        component: () => import('@/views/conf/develop'),
+        meta: {title: '成长专区', icon: 'el-icon-user-solid'},
+        hidden: true
+      },
     ]
   },
 
+*/
   {
-    path: '/feedback',
+    path: '/',
     component: Layout,
     children: [
       {
-        path: 'index',
-        name: '意见反馈',
-        component: () => import('@/views/feedback/index'),
-        meta: { title: '意见反馈', icon: 'el-icon-phone-outline' },
-        hidden: true
+        path: 'jobSquareOne',
+        name: 'jobSquareOne',
+        component: () => import('@/views/square/job'),
+        meta: {title: '职位广场', icon: 'el-icon-ice-cream-square'},
+      }
+    ]
+  },
+  {
+    path: '/jobSquarePush',
+    component: Layout,
+    children: [
+      {
+        path: 'jobSquarePushOne',
+        name: 'jobSquarePushOne',
+        component: () => import('@/views/square/data'),
+        meta: {title: '推广数据', icon: 'el-icon-s-data'},
       }
     ]
   },
@@ -167,12 +211,12 @@ export const constantRoutes = [
   // },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  {path: '*', redirect: '/404', hidden: true}
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({y: 0}),
   routes: constantRoutes
 })
 

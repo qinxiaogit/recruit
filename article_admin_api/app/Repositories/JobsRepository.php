@@ -17,7 +17,7 @@ class JobsRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        
+        'name'
     ];
 
     /**

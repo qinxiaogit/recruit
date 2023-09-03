@@ -36,6 +36,7 @@ Route::group([
         Route::post('logout', 'API\\AuthController@logout');
         Route::post('me', 'API\\AuthController@me');
     });
+
 });
 
 Route::group([
@@ -63,8 +64,31 @@ Route::group([
         Route::get('resource/list', 'API\\ResourceController@index');
     });
     Route::group([
-        'prefix' => 'backend'
+        'prefix' => 'backend',
+        'middleware' => 'auth:backend',
     ], function () {
+        Route::get('store/list', 'Backend\\StoreAPIController@index');
+        Route::post('store/save', 'Backend\\StoreAPIController@save');
+        Route::post('store/delete', 'Backend\\StoreAPIController@delete');
+        Route::post('store/show', 'Backend\\StoreAPIController@show');
+
+        Route::get('user/list', 'Backend\\UserController@index');
+        Route::post('user/save', 'Backend\\UserController@save');
+        Route::post('user/delete', 'Backend\\UserController@delete');
+        Route::get('user/show', 'Backend\\UserController@show');
+
+        Route::post('conf/saveArr', 'Backend\\ConfController@saveArr');
+        Route::get('conf/show', 'Backend\\ConfController@show');
+
+        Route::post('upload', 'PublicController@upload');
+
+
+        Route::Group(['prefix'=>'jobs'],function (){
+
+            Route::get('','API\\JobsController@index');
+            Route::post('share','API\\JobsController@share');
+            Route::post('dashboash','API\\JobsController@dashboash');
+        });
 
     });
 });

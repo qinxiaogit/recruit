@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function JobList(params) {
   return request({
-    url: '/v1/jobs',
+    url: '/v1/backend/jobs',
     method: 'get',
     params
   })
@@ -58,3 +58,11 @@ export function reportStatusJob(params) {
   })
 }
 
+
+export function shareJob(params){
+  return request({
+    url: '/v1/backend/jobs/share',
+    method: 'post',
+    data: params
+  })
+}

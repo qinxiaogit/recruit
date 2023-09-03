@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '商户平台',
+  title: '代理商推广平台',
 
   /**
    * @type {boolean} true | false

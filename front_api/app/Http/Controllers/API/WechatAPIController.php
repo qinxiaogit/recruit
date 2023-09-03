@@ -7,6 +7,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\AppBaseController;
 use App\Models\AppUser;
 use App\User;
+use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -118,6 +120,7 @@ class WechatAPIController extends AppBaseController
         $jobId = $request->get("id");
         $inviteCode = $request->get("invite_code");
         $token = $request->get('token');
+        $shareMethod = $request->get('shareMethod');
         if ($token != "asdmasaskdajdmkaskmasmkasdmksdamkdskmsdkmdsmkcdsike9i38927y802") {
             return response()->json(['msg' => 'Unauthorized', 'code' => 66,], 200);
         }
@@ -135,18 +138,33 @@ class WechatAPIController extends AppBaseController
 
                 return response()->json(['msg' => 'Unauthorized', 'code' => 66,], 200);
         }
-        $response =$this->app->app_code->getUnlimit($scene,[
-            'page'  => $path,
-        ]);
-        if ($response instanceof \EasyWeChat\Kernel\Http\StreamResponse) {
-            $filename = $response->save('/tmp');
 
-            $localName = "/tmp/".$filename;
-            $remoteFile = 'qrcode/' . date("Ymd") . "/" . md5(time()).".png";
+        if($shareMethod == 2){
+            try {
+                $response = $this->app->app_code->requestRaw("wxa/generate_urllink", "POST", [
+                        "page_url"=>$scene."&scene=".urlencode($scene),
+                        "expire_type"=>0,
+                        "expire_time"=>strtotime("+30day")
+                ]);
+            } catch (\Exception $e) {
 
-            $remoteUrl = $this->upload_image($remoteFile, file_get_contents($localName));
-            unlink($localName);
-            return $this->sendResponse($remoteUrl, '上传成功');
+            }
+            //https://api.weixin.qq.com/wxa/genwxashortlink?access_token=ACCESS_TOKEN
+//            $response =$this->app->access_token->getLastToken()
+        }else{
+            $response =$this->app->app_code->getUnlimit($scene,[
+                'page'  => $path,
+            ]);
+            if ($response instanceof \EasyWeChat\Kernel\Http\StreamResponse) {
+                $filename = $response->save('/tmp');
+
+                $localName = "/tmp/".$filename;
+                $remoteFile = 'qrcode/' . date("Ymd") . "/" . md5(time()).".png";
+
+                $remoteUrl = $this->upload_image($remoteFile, file_get_contents($localName));
+                unlink($localName);
+                return $this->sendResponse($remoteUrl, '上传成功');
+            }
         }
         $this->sendResponse($response->toArray(), '上传成功');
     }

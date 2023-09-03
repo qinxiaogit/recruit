@@ -2,48 +2,36 @@ import request from '@/utils/request'
 import da from "element-ui/src/locale/lang/da";
 
 export function StoreList(data) {
-  console.log(data)
   return request({
-    url: '/v1/store',
-    method: 'post',
-    data
+    url: '/v1/backend/store/list',
+    method: 'get',
+    params: data
   })
 }
 
-//审核
-export function StoreAudit(data) {
+//修改新增店铺
+export function StoreSave(data) {
   return request({
-    url: '/v1/store/audit',
+    url: '/v1/backend/store/save',
     method: 'post',
-    data
+    data: data,
   })
 }
 
-
-//上下架
-export function StoreStatus(data) {
+//删除店铺信息
+export function StoreDelete(data) {
   return request({
-    url: '/v1/store/status',
+    url: '/v1/backend/store/delete',
     method: 'post',
-    data
+    data: data,
   })
 }
 
-//余额变更
-export function StoreBalance(data) {
-  return request({
-    url: '/v1/store/balance',
-    method: 'post',
-    data: data
-  })
-}
-
-//商户详情
+//删除店铺信息
 export function StoreShow(data) {
   return request({
-    url: '/v1/store/show',
-    method: 'get',
-    data: data
+    url: '/v1/backend/store/show',
+    method: 'post',
+    data: data,
   })
 }
-

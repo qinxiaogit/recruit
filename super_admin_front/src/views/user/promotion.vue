@@ -3,7 +3,7 @@
 <el-row>
   <el-col :span="6" v-for="(o, index) in reportData" :key="o.id" :offset="index > 0 ? 2 : 0">
     <el-card :body-style="{ padding: '0px' }">
-      <img :src="o.logo?o.logo:'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png'" class="image">
+      <img :src="o.logo?o.logo:'https://cdn.yunqirenli.com/document/59fc6a8da009f_610.png'" class="image">
       <div style="padding: 14px;">
         <span>{{o.view=="home"?"系统首页":"职位列表（"+o.store_name+")("+o.job_name+"）"}}</span>
         <div class="bottom clearfix">

@@ -4,11 +4,12 @@
     <div class="demo-input-suffix">
       <template>
         <el-input
-          placeholder="请输入用户昵称"
+          placeholder="请输入用户手机号"
           prefix-icon="el-icon-search"
-          v-model="search_name" style="width: 160px; margin-right: 10px; margin-left: 16px;">
+          v-model="keyword" style="width: 160px; margin-right: 10px; margin-left: 16px;">
         </el-input>
         <el-button @click="fetchData" type="primary">搜索</el-button>
+        <el-button @click="newUser" type="primary">新增用户</el-button>
       </template>
     </div>
 
@@ -27,17 +28,12 @@
       </el-table-column>
       <el-table-column label="用户昵称" width="100">
         <template slot-scope="scope">
-          {{ scope.row.nickname }}
+          {{ scope.row.nickname}}
         </template>
       </el-table-column>
       <el-table-column label="用户真实名称" width="160" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.real_name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="生日" width="120" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.birthday }}
         </template>
       </el-table-column>
       <el-table-column label="用户头像" width="160" align="center">
@@ -54,64 +50,26 @@
           <span>{{ scope.row.mobile }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邀请码" width="120">
-        <template slot-scope="scope">
-          {{ scope.row.invite_code }}
-        </template>
-      </el-table-column>
-
-      <el-table-column class-name="status-col" label="性别" width="120" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.sex === 1? "男":"女" }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="created_at" label="注册时间" width="160">
+      <el-table-column align="center" prop="created_at" label="添加时间" width="160">
         <template slot-scope="scope">
           <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column align="center" prop="created_at" label="邀请人" width="200">
+      <el-table-column align="center" prop="created_at" label="最后活跃时间" width="160">
         <template slot-scope="scope">
-          <el-card v-if="scope.row.invite_user" :body-style="{ padding: '0px' }">
-            <img style="width: 100px; height: 100px;" :src=scope.row.invite_user.avatar  class="image">
-            <div style="padding: 14px;">
-              <span>{{ scope.row.invite_user.nickname }}</span>
-            </div>
-          </el-card>
-          <span v-else> 无邀请人</span>
+          <span>{{ scope.row.active_time }}</span>
         </template>
       </el-table-column>
-
-
-      <!--el-table-column align="center" style="display: none;" prop="created_at" label="操作">
+      <el-table-column align="center" prop="created_at" label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" @click="updateStore(scope.row)" style="display: none;" icon="el-icon-edit">编辑
+          <el-button type="primary" @click="updateUser(scope.row)" icon="el-icon-edit">编辑
           </el-button>
-          <el-popover
-            placement="top"
-            width="350"
-            v-model="visible">
-            <p>企业入驻审核结果？</p>
-            <el-input placeholder="请输入内容" style="margin-bottom: 10px;" v-model="auditReason">
-              <template slot="prepend">审核操作原因</template>
-            </el-input>
-            <div style="text-align: right; margin: 0">
-              <el-button size="mini" type="text" @click="auditStore(scope.row, 0)">审核通过</el-button>
-              <el-button type="primary" size="mini" @click="auditStore(scope.row, 1)">审核驳回</el-button>
-            </div>
-            <el-button type="primary" slot="reference" v-if="parseInt(scope.row.status) ===0" icon="el-icon-position">
-              审核
-            </el-button>
-          </el-popover>
-          <el-button type="primary" @click="downStore(scope.row)" v-if="parseInt(scope.row.status) ===1"
-                     icon="el-icon-bottom">下架
+          <el-button style="margin-left: 10px;" type="primary" @click="deleteUser(scope.row)"
+                     icon="el-icon-delete">删除
           </el-button>
-          <el-button type="primary" @click="upStore(scope.row)" v-if="parseInt(scope.row.status) ===2"
-                     icon="el-icon-top">上架
-          </el-button>
+
         </template>
-      </el-table-column -->
+      </el-table-column>
     </el-table>
     <el-pagination style="float: right;margin-top:20px;"
                    background
@@ -133,7 +91,7 @@
 </style>
 
 <script>
-    import {UserList} from '@/api/user'
+    import {UserList,UserDelete} from '@/api/user'
 
     export default {
         filters: {
@@ -153,21 +111,8 @@
                 visible: false,
                 auditReason: "",
                 total: 0,
-                options: [{
-                    value: '-1',
-                    label: '全部'
-                }, {
-                    value: '0',
-                    label: '待审核'
-                }, {
-                    value: '1',
-                    label: '上架'
-                }, {
-                    value: '2',
-                    label: '下架'
-                }],
                 value: '-1',
-                search_name: "",
+                keyword: "",
                 currentPage: 1,
                 currentPageSize: 10,
 
@@ -180,7 +125,7 @@
             fetchData() {
                 this.listLoading = true
                 UserList({
-                    nickname: this.search_name,
+                    keyword: this.keyword,
                     skip: (this.currentPage - 1) * this.currentPageSize,
                     limit: this.currentPageSize,
                 }).then(response => {
@@ -191,7 +136,19 @@
             },
             handleCurrentChange(val) {
                 this.fetchData()
-            }
+            },
+            newUser() {
+                this.$router.push({name: "updateUser"})
+            },
+            deleteUser(row) {
+                const self = this
+                UserDelete({id: row.id}).then(response => {
+                    self.fetchData()
+                })
+            },
+            updateUser(row) {
+                this.$router.push({name: "updateUser", query: {id: row.id}})
+            },
         }
     }
 </script>
