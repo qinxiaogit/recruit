@@ -148,7 +148,7 @@ class WechatAPIController extends AppBaseController
                         "expire_time"=>strtotime("+30day")
 
                 ]);
-                var_dump($response->getBody()->getContents());die();
+                var_dump($response);die();
             } catch (\Exception $e) {
                 var_dump($e->getMessage());die();
             }
