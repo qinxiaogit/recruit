@@ -66,3 +66,12 @@ export function shareJob(params){
     data: params
   })
 }
+
+
+export function detailJob(params){
+  return request({
+    url: '/v1/backend/jobs/detail',
+    method: 'post',
+    data: params
+  })
+}

@@ -116,4 +116,36 @@ class JobsController extends AppBaseController
             ->get()->toArray();
         return $this->sendResponse($data,"操作成功");
     }
+
+    public function detail(Request $request){
+        $skip = $request->get('skip');
+        $limit=$request->get('limit');
+        $startDate = $request->get("start_date",date("Y-m-d"));
+        $endDate = $request->get("end_date",date("Y-m-d"));
+
+        $uid = auth()->id();
+
+        $query = DB::table('promotion_job_log as pj')
+            ->leftJoin("jobs as j","pj.view_id",'=','j.id')
+            ->leftJoin("stores as s","s.id",'=','j.store_id')
+            ->where("pj.agent_id",'=',$uid);
+
+        $query->whereBetween('pj.created_at',[
+                $startDate." 00:00:00",
+                $endDate." 23:59:59"
+            ]);
+
+        $total = $query->count();
+        $items = $query->orderByDesc('pj.id')
+            ->offset($skip)
+            ->limit($limit)
+            ->select("pj.*","j.name as job_name","s.name as store_name","s.logo")
+            ->get()->toArray();
+        $data = [
+            'items' => $items,
+            'total' => $total,
+//            'where'=>DB::getQueryLog()
+        ];
+        return $this->sendResponse($data, 'App Users retrieved successfully');
+    }
 }

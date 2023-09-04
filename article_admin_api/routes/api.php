@@ -88,6 +88,7 @@ Route::group([
             Route::get('','API\\JobsController@index');
             Route::post('share','API\\JobsController@share');
             Route::post('dashboash','API\\JobsController@dashboash');
+            Route::post('detail','API\\JobsController@detail');
         });
 
     });

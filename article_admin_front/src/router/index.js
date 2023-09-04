@@ -180,8 +180,8 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'jobSquareOne',
-        name: 'jobSquareOne',
+        path: '/',
+        name: '/',
         component: () => import('@/views/square/job'),
         meta: {title: '职位广场', icon: 'el-icon-ice-cream-square'},
       }
@@ -195,7 +195,19 @@ export const constantRoutes = [
         path: 'jobSquarePushOne',
         name: 'jobSquarePushOne',
         component: () => import('@/views/square/data'),
-        meta: {title: '推广数据', icon: 'el-icon-s-data'},
+        meta: {title: '推广数据', icon: 'el-icon-data-board'},
+      }
+    ]
+  },
+  {
+    path: '/jobSquareDetail',
+    component: Layout,
+    children: [
+      {
+        path: 'jobSquareDetail',
+        name: 'jobSquareDetail',
+        component: () => import('@/views/square/detail'),
+        meta: {title: '推广明细数据', icon: 'el-icon-s-data'},
       }
     ]
   },
