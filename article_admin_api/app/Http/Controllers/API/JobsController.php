@@ -120,9 +120,10 @@ class JobsController extends AppBaseController
     public function detail(Request $request){
         $skip = $request->get('skip');
         $limit=$request->get('limit');
-        $startDate = $request->get("start_date",date("Y-m-d"));
-        $endDate = $request->get("end_date",date("Y-m-d"));
+        $startDate = $request->get("start_time",date("Y-m-d"));
+        $endDate = $request->get("end_time",date("Y-m-d"));
 
+//        DB::enableQueryLog();
         $uid = auth()->id();
 
         $query = DB::table('promotion_job_log as pj')
@@ -144,7 +145,7 @@ class JobsController extends AppBaseController
         $data = [
             'items' => $items,
             'total' => $total,
-//            'where'=>DB::getQueryLog()
+//           'where'=>DB::getQueryLog()
         ];
         return $this->sendResponse($data, 'App Users retrieved successfully');
     }

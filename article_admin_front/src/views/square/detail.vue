@@ -142,14 +142,36 @@
             handleCurrentChange(val) {
                 this.fetchData()
             },
+            handeDate:function(date){
+                var seperator1 = "-";
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                var strDate = date.getDate();
+                if (month >= 1 && month <= 9) {
+                    month = "0" + month;
+                }
+                if (strDate >= 0 && strDate <= 9) {
+                    strDate = "0" + strDate;
+                }
+                return  year + seperator1 + month + seperator1 + strDate;
+            },
             fetchData() {
                 console.log(this.value1)
+                let startTime =""
+                let endTime=""
+                if (this.value1.length === 2){
+                    startTime =  this.handeDate(this.value1[0])
+                    endTime = this.handeDate(this.value1[1])
+                }
+                console.log(startTime,endTime)
                 this.listLoading = true
                 detailJob({
                     name: this.search_name,
                     status: this.value,
                     skip: (this.currentPage - 1) * this.currentPageSize,
                     limit: this.currentPageSize,
+                    start_time:startTime,
+                    end_time:endTime
                 }).then(response => {
                     this.list = response.data.items
                     this.total = response.data.total
