@@ -34,6 +34,9 @@ class AgentAPIController extends AppBaseController
 
         }
 
+        if (is_null($uid)){
+            $uid= 0;
+        }
         $agentUid = base_convert($agentCode, 36, 10) - AppUser::USER_INVITE_CODE_START ;
 
 //        DB::enableQueryLog();
