@@ -109,27 +109,9 @@
         <template slot-scope="scope">
           <el-button type="primary" @click="updateStore(scope.row)" style="display: none;" icon="el-icon-edit">编辑
           </el-button>
-          <el-popover
-            placement="top"
-            width="400"
-            v-model="visible">
-            <p>职位审核结果？</p>
-            <span style="display: block">职位名称：{{scope.row.name}} <span style="color: red;">{{scope.row.audit_log?scope.row.audit_log.extra.name:""}}</span></span>
-            <span style="display: block">职位介绍：{{scope.row.work_content}} <span style="color: red">{{scope.row.audit_log ? scope.row.audit_log.extra.work_content:""}}</span></span>
-            <span style="display: block">职位要求：{{scope.row.work_require}}</span>
-            <span style="display: block">薪资说明：{{scope.row.salary}}/{{scope.row.unit}}</span>
-
-            <el-input placeholder="请输入内容" style="margin-bottom: 10px;" v-model="auditReason">
-              <template slot="prepend">审核操作原因</template>
-            </el-input>
-            <div style="text-align: right; margin: 0">
-              <el-button size="mini" type="text" @click="auditStore(scope.row, 1)">审核通过</el-button>
-              <el-button type="primary" size="mini" @click="auditStore(scope.row, 2)">审核驳回</el-button>
-            </div>
-            <el-button type="primary" style="margin-right: 5px;" slot="reference" v-if="parseInt(scope.row.status) ===0 || scope.row.audit_log " icon="el-icon-position">
+            <el-button type="primary" style="margin-right: 5px;" @click="clickShowAudit(scope.row)" slot="reference" v-if="parseInt(scope.row.status) ===0 || scope.row.audit_log " icon="el-icon-position">
               审核
             </el-button>
-          </el-popover>
           <el-button type="primary" @click="downStore(scope.row)" v-if="parseInt(scope.row.status) ===1 "
                      icon="el-icon-bottom">下架
           </el-button>
@@ -153,6 +135,25 @@
                    :current-page.sync="currentPage"
     >
     </el-pagination>
+    <el-dialog
+      placement="top"
+      width="400"
+      :visible.sync="visible"
+      title="职位审核结果？"
+    >
+      <span style="display: block">职位名称：{{jobName}} <span style="color: red;">{{audit_log_name}}</span></span>
+      <span style="display: block">职位介绍：{{job_work_content}} <span style="color: red">{{audit_log_work_content}}</span></span>
+      <span style="display: block">职位要求：{{work_require}}</span>
+      <span style="display: block">薪资说明：{{salary}}/{{unit}}</span>
+
+      <el-input placeholder="请输入内容" style="margin-bottom: 10px;" v-model="auditReason">
+        <template slot="prepend">审核操作原因</template>
+      </el-input>
+      <div style="text-align: right; margin: 0">
+        <el-button size="mini" type="text" @click="auditStore( 1)">审核通过</el-button>
+        <el-button type="primary" size="mini" @click="auditStore( 2)">审核驳回</el-button>
+      </div>
+    </el-dialog>
     <el-dialog
       title="生成邀请码"
       :visible.sync="dialogInviteCode"
@@ -223,7 +224,14 @@
                 search_name: "",
                 currentPage: 1,
                 currentPageSize: 10,
-
+                jobName:"",
+                job_work_content:'',
+                audit_log_name:"",
+                audit_log_work_content:"",
+                work_require:"",
+                salary:"",
+                unit:"",
+                workRow:{}
             }
         },
         created() {
@@ -278,14 +286,14 @@
                     this.fetchData()
                 })
             },
-            auditStore(row, status) {
+            auditStore(status) {
                 const loading = this.$loading({
                     lock: true,
                     text: '数据提交中',
                     spinner: 'el-icon-loading',
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
-                UpdateJob(row.id,{status:status}).then(response => {
+                UpdateJob(this.workRow.id,{status:status}).then(response => {
                     this.visible = false
                     loading.close()
                     this.fetchData()
@@ -301,6 +309,19 @@
             },
             handleCurrentChange(val) {
                 this.fetchData()
+            },
+            clickShowAudit(row){
+                this.visible= true
+                this.jobName = row.name
+                this.job_work_content = row.work_content
+                this.audit_log_name = row.audit_log?row.audit_log.extra.name:""
+                this.audit_log_work_content = row.audit_log?row.audit_log.extra.work_content:""
+
+                this.salary = row.salary
+                this.unit = row.unit
+                this.work_require= row.work_require
+
+                this.workRow = row
             },
             shareJob(row){
                 this.dialogInviteCode = true
